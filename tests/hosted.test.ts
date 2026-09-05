@@ -18,6 +18,7 @@ function fixture(){
 async function session(f:ReturnType<typeof fixture>){const response=await f.request();assert.equal(response.status,200);return response.headers.get('Set-Cookie')!.split(';')[0]!;}
 test('hosted session survives separate handler calls and protects private state',async()=>{
  const f=fixture(),cookie=await session(f);assert.match(cookie,/^__Host-ghost-protocol-session=[a-f0-9]{64}$/);
+ assert.deepEqual(await(await f.request('/api/transport')).json(),{type:'http'});
  const response=await f.request();assert.match(response.headers.get('Set-Cookie')!,/Secure/);
  await f.request('/api/command',{type:'start'},cookie);f.advance(660);
  const state=await(await f.request('/api/state',undefined,cookie)).json() as any;

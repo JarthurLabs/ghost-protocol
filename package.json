@@ -11,12 +11,14 @@
     "start": "NODE_ENV=production node --import tsx server/index.ts",
     "verify:browser": "node --import tsx scripts/campaign-browser-check.mjs",
     "demo": "node --import tsx scripts/demo.ts",
-    "verify:audio": "node scripts/audio-check.mjs"
+    "verify:audio": "node scripts/audio-check.mjs",
+    "start:cloud": "NODE_ENV=production node --import tsx server/cloud.ts"
   },
   "dependencies": {
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "three": "0.185.1"
+    "three": "0.185.1",
+    "ws": "8.21.3"
   },
   "devDependencies": {
     "@openai/sites-vite-plugin": "^0.2.0",
@@ -24,6 +26,7 @@
     "@types/react": "19.1.12",
     "@types/react-dom": "19.1.9",
     "@types/three": "0.183.1",
+    "@types/ws": "8.18.1",
     "playwright": "1.58.2",
     "tsx": "4.23.13",
     "typescript": "5.9.3",

@@ -50,11 +50,11 @@ The server owns actor positions, credentials, timers, permission decisions and o
 
 The fictional package pickup represents a key-leak incident. Reading a file does not automatically copy credentials in real systems. Narrowing access in the defender finale proves the two displayed requests; a real incident also calls for replacing the exposed credential. This is a teaching game, not a complete identity platform or security assessment.
 
-Campaign progress and preferences stay in browser storage. The game adds no player accounts, analytics tracking or online leaderboards. The hosting platform records its own traffic and operational logs. Local play uses Node; the hosted adapter uses a Worker and a database while reusing the same engine. A static host alone cannot enforce the game.
+Campaign progress and preferences stay in browser storage. The game adds no player accounts, analytics tracking or online leaderboards. The hosting platform records its own traffic and operational logs. Local play uses Node. The current Sites preview uses a Worker and a database. A persistent Node server with a direct live connection is now prepared to remove the measured database delay. All modes reuse the same authoritative engine. [Repair and deployment plan](docs/REALTIME_REPAIR.md). A static host alone cannot enforce the game.
 
 ## Verify it
 
-The 82-test suite checks the campaign, authorization rules, session boundaries and hosted concurrency. The demo completes all five missions and the defender’s paired requests:
+The test suite checks the campaign, authorization rules, session boundaries and hosted concurrency. The demo completes all five missions and the defender’s paired requests:
 
 ```sh
 npm test

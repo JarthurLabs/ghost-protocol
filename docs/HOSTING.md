@@ -19,3 +19,11 @@ A bounded WebSocket echo probe was deployed before attempting a transport rewrit
 The game itself adds no analytics. Sites records platform traffic and operational logs, as described in [the Sites guide](https://learn.chatgpt.com/docs/sites#review-site-analytics).
 
 The local Node server and source remain independent of hosting. Use the README's local setup for the approved experience while the hosted connection is being repaired.
+
+## September 5 follow-up: failure located, replacement prepared
+
+Diagnostic version 4 returned HTTP 200 for an internal runtime check: WebSocketPair is available, and the native upgrade response has status 101 and an attached socket. The actual browser upgrade still returned HTTP 500. The matching production log confirms status 101 and hasSocket true immediately before our handler returns. This narrows the failure to the subsequent hosted handoff. The exact platform exception is unavailable. [Sanitized diagnostic receipt](evidence/sites-websocket-diagnostic.json). Production is restored to the original version 1; diagnostic routes are not live.
+
+A separate persistent Node option now sends commands and snapshots over one authenticated, ordered WebSocket. It preserves the approved local HTTP mode and the unchanged game engine. Its local browser check completed all five missions, actual capture and retry, Vault lockdown with Transit retained, the defender finale and earned progress after reload. The direction-acknowledgement median was 11.9 milliseconds across 91 commands, with a 15.3-millisecond ninety-fifth percentile. These are local measurements, not a claim about an internet host.
+
+The proposed Render deployment is prepared in render.yaml. No Render account or resource has been created, and no charge has been authorized. It uses one persistent instance; active attempts are in memory and reset on a process restart. Completed mission progress remains in browser storage. The server limits live connections to 32 and retained sessions to 256; these are safety caps, not a verified player-capacity claim. [Deployment details and approval boundary](REALTIME_REPAIR.md).

@@ -64,6 +64,7 @@ export async function handleHosted(request:Request,env:HostedEnv,clock:()=>numbe
   const url=new URL(request.url);
   if(url.origin!==PUBLIC_ORIGIN)throw new HttpError(403,'This host does not serve Ghost Protocol.');
   if(url.pathname==='/api/health'&&request.method==='GET')return json({game:'ghost-protocol',runtime:'hosted',approvedGame:'e3ad76c'});
+  if(url.pathname==='/api/transport'&&request.method==='GET')return json({type:'http'});
   if(url.pathname==='/api/state'&&request.method==='GET'){checkOrigin(request,false);return await sessionRequest(request,env,clock());}
   if(url.pathname==='/api/command'&&request.method==='POST'){checkOrigin(request,true);const input=await commandBody(request);return await sessionRequest(request,env,clock(),input);}
   if(url.pathname.startsWith('/api/'))throw new HttpError(404,'Unknown API route or method.');

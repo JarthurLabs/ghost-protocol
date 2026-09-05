@@ -1,0 +1,89 @@
+{
+  "deploymentId": "appgdep_6a9c3e0197988191904ed0f8f5b4a8a0",
+  "runtimeCheck": {
+    "status": 200,
+    "body": {
+      "pairAvailable": true,
+      "status": 101,
+      "hasSocket": true
+    }
+  },
+  "browserUpgrade": {
+    "status": 500,
+    "message": "Unexpected response code: 500"
+  },
+  "events": [
+    {
+      "timestamp": 1788624433659,
+      "requestId": "560c8faaad0dc49d53f3ab9c149ecbbc",
+      "traceId": "509374fe58c89e4c5524da0f5a5d1753",
+      "rayId": "a3667c562ac0f4cf",
+      "route": "https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-check",
+      "outcome": "canceled",
+      "cpuMs": 0,
+      "wallMs": 12,
+      "source": {
+        "level": "info",
+        "message": "GET https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-check"
+      }
+    },
+    {
+      "timestamp": 1788624433659,
+      "requestId": "560c8faaad0dc49d53f3ab9c149ecbbc",
+      "traceId": "509374fe58c89e4c5524da0f5a5d1753",
+      "rayId": "a3667c562ac0f4cf",
+      "route": "https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-check",
+      "outcome": null,
+      "source": {
+        "hasSocket": true,
+        "level": "error",
+        "event": "ghost-protocol-socket-probe-v4",
+        "status": 101
+      }
+    },
+    {
+      "timestamp": 1788624428632,
+      "requestId": "630e219675bf72e9c612dfb2f8ebe194",
+      "traceId": "1eaddd36993dca624da8babdc2d95c10",
+      "rayId": "a3667c23ed6ab20b",
+      "route": "https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-runtime-check",
+      "outcome": "ok",
+      "cpuMs": 1,
+      "wallMs": 1,
+      "source": {
+        "level": "info",
+        "message": "GET https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-runtime-check"
+      }
+    },
+    {
+      "timestamp": 1788624428632,
+      "requestId": "630e219675bf72e9c612dfb2f8ebe194",
+      "traceId": "1eaddd36993dca624da8babdc2d95c10",
+      "rayId": "a3667c23ed6ab20b",
+      "route": "https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-runtime-check",
+      "outcome": null,
+      "source": {
+        "message": "The Workers runtime canceled this request because it detected that your Worker's code had hung and would never generate a response. Refer to: https://developers.cloudflare.com/workers/observability/errors/",
+        "exception": {
+          "name": "Error",
+          "timestamp": 1788624428632
+        }
+      }
+    },
+    {
+      "timestamp": 1788624428631,
+      "requestId": "630e219675bf72e9c612dfb2f8ebe194",
+      "traceId": "1eaddd36993dca624da8babdc2d95c10",
+      "rayId": "a3667c23ed6ab20b",
+      "route": "https://ghost-protocol.jamalarthur1.chatgpt.site/api/socket-runtime-check",
+      "outcome": null,
+      "source": {
+        "pairAvailable": true,
+        "hasSocket": true,
+        "level": "error",
+        "event": "ghost-protocol-runtime-check",
+        "status": 101
+      }
+    }
+  ]
+}

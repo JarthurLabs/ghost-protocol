@@ -10,6 +10,7 @@ import { MissionSelect, Debrief, Credits } from './CampaignScreens';
 import { loadProgress, saveProgress, recordCompletion } from './progress';
 import './learning.css';
 import { audio, type Cue } from './audio';
+import { LiveGameConnection } from './liveConnection';
 
 function savedBoolean(key: string, fallback: boolean) {
   try { const value = localStorage.getItem(key); return value === null ? fallback : value === 'true'; }
@@ -100,9 +101,13 @@ export default function App() {
   const inspectorPaused = useRef(false);
   const restartPaused = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const connectionErrorRef = useRef<HTMLDivElement>(null);
   const deniedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const interactionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const requestTail = useRef<Promise<void>>(Promise.resolve());
+  const liveConnection = useRef<LiveGameConnection|null>(null);
+  const connectionEpoch = useRef(0);
+  const transportReady = useRef(false);
   const lastDenialAt = useRef(0);
   const activeRequest = useRef<AbortController | null>(null);
 
@@ -160,6 +165,8 @@ export default function App() {
 
   useEffect(() => {
     const controller = new AbortController();
+    const epoch=++connectionEpoch.current;
+    transportReady.current=false;busyRef.current=true;setBusy(true);
     let timer: ReturnType<typeof setTimeout>;
     const poll = () => {
       if (controller.signal.aborted) return;
@@ -176,8 +183,32 @@ export default function App() {
       requestTail.current = requestTail.current.then(read, read);
       void requestTail.current.then(() => { timer = setTimeout(poll, 80); });
     };
-    poll();
-    return () => { controller.abort(); clearTimeout(timer); };
+    const connect=async()=>{
+      try{
+        const transportController=new AbortController();
+        const abortTransport=()=>transportController.abort();controller.signal.addEventListener('abort',abortTransport,{once:true});
+        const timeout=setTimeout(()=>transportController.abort(Error('The game connection timed out. Reconnect to try again.')),4000);
+        let transport:{type:string};
+        try{
+          const response=await fetch('/api/transport',{credentials:'same-origin',signal:transportController.signal});
+          if(!response.ok&&response.status!==404)throw Error('The game connection is unavailable. Reconnect to try again.');
+          transport=response.ok?await response.json():{type:'http'};
+        }
+        finally{clearTimeout(timeout);controller.signal.removeEventListener('abort',abortTransport);}
+        if(controller.signal.aborted)return;
+        if(transport.type!=='websocket'){transportReady.current=true;busyRef.current=false;setBusy(false);poll();return;}
+        const initial=await requestState('/api/state',{},controller.signal);
+        if(controller.signal.aborted)return;
+        acceptState(initial,false);
+        const url=new URL('/api/live',location.href);url.protocol=location.protocol==='https:'?'wss:':'ws:';
+        const connection=new LiveGameConnection(url.href,next=>{if(!controller.signal.aborted){acceptState(next);setError(null);}},message=>{if(!controller.signal.aborted){transportReady.current=false;setError(message);}});
+        liveConnection.current=connection;
+        await connection.ready();
+        if(!controller.signal.aborted){transportReady.current=true;busyRef.current=false;setBusy(false);}
+      }catch(cause){if(!controller.signal.aborted){busyRef.current=false;setBusy(false);setError(cause instanceof Error?cause.message:'Connection interrupted.');}}
+    };
+    void connect();
+    return () => { controller.abort(); clearTimeout(timer); if(connectionEpoch.current===epoch){liveConnection.current?.close();liveConnection.current=null;} };
   }, [acceptState, requestState, retry]);
 
   useEffect(()=>{if(state?.status==='won')setProgress(previous=>recordCompletion(previous,{runId:state.runId,levelId:state.levelId,elapsedMs:state.elapsedMs,chips:state.collectedShards.length}));},[state?.status,state?.runId]);
@@ -198,15 +229,20 @@ export default function App() {
   }, []);
 
   const command = useCallback((value: Command): Promise<boolean> => {
+    const epoch=connectionEpoch.current;
     const modalCommand = !['move','wait','interact'].includes(value.type);
+    if(liveConnection.current&&modalCommand&&busyRef.current)return Promise.resolve(false);
     const send = async () => {
+      if(epoch!==connectionEpoch.current||!transportReady.current)return false;
       if (modalCommand) { busyRef.current = true; setBusy(true); }
       try {
-        const data = await requestState('/api/command', {
+        const live=liveConnection.current;
+        const data = live?await live.command(value):await requestState('/api/command', {
           method: 'POST', keepalive: value.type === 'pause',
           headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value),
         });
-        acceptState(data);
+        if(epoch!==connectionEpoch.current)return false;
+        if(!live)acceptState(data);
         if(value.type==='interact'&&data.status==='playing'){
           if(interactionTimer.current)clearTimeout(interactionTimer.current);
           setInteractionFeedback({event:data.event,message:data.message});
@@ -215,12 +251,13 @@ export default function App() {
         setError(null);
         return true;
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : 'Connection interrupted.');
+        if(epoch===connectionEpoch.current)setError(cause instanceof Error ? cause.message : 'Connection interrupted.');
         return false;
       } finally {
-        if (modalCommand) { busyRef.current = false; setBusy(false); }
+        if (modalCommand&&epoch===connectionEpoch.current) { busyRef.current = false; setBusy(false); }
       }
     };
+    if(liveConnection.current)return send();
     const result = requestTail.current.then(send, send);
     requestTail.current = result.then(() => undefined);
     return result;
@@ -337,25 +374,26 @@ export default function App() {
 
   const hasModal = screen!=='game' || inspector || restartConfirm || state?.status === 'paused' || state?.status === 'won' || state?.status === 'lost';
   useEffect(() => {
-    if (!hasModal) return;
+    if (!hasModal&&!error) return;
+    const scope=()=>error?connectionErrorRef.current:overlayRef.current;
     const previousFocus = document.activeElement as HTMLElement | null;
     const frame = requestAnimationFrame(() => {
-      const firstButton = overlayRef.current?.querySelector<HTMLButtonElement>('button:not(:disabled)');
+      const firstButton = scope()?.querySelector<HTMLButtonElement>('button:not(:disabled)');
       if (firstButton) firstButton.focus();
-      else overlayRef.current?.focus();
+      else scope()?.focus();
     });
     const trap = (event: KeyboardEvent) => {
       if (event.key !== 'Tab') return;
-      const controls = [...(overlayRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), summary, [tabindex="0"]')??[])].filter(element=>element.getClientRects().length>0);
+      const controls = [...(scope()?.querySelectorAll<HTMLElement>('button:not(:disabled), a[href], input:not(:disabled), summary, [tabindex="0"]')??[])].filter(element=>element.getClientRects().length>0);
       if (!controls?.length) return;
       const first = controls[0];
       const last = controls[controls.length - 1];
-      if (event.shiftKey && (document.activeElement === first || !overlayRef.current?.contains(document.activeElement))) { event.preventDefault(); last?.focus(); }
-      else if (!event.shiftKey && (document.activeElement === last || !overlayRef.current?.contains(document.activeElement))) { event.preventDefault(); first?.focus(); }
+      if (event.shiftKey && (document.activeElement === first || !scope()?.contains(document.activeElement))) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && (document.activeElement === last || !scope()?.contains(document.activeElement))) { event.preventDefault(); first?.focus(); }
     };
     window.addEventListener('keydown', trap);
     return () => { cancelAnimationFrame(frame); window.removeEventListener('keydown', trap); previousFocus?.focus({ preventScroll: true }); };
-  }, [hasModal,inspector,restartConfirm,state?.status,screen]);
+  }, [hasModal,inspector,restartConfirm,state?.status,screen,error]);
 
   const active=state?.status==='playing'&&screen==='game'&&!inspector&&!restartConfirm;
   const level=state?getLevel(state.levelId):LEVELS[0];
@@ -388,11 +426,11 @@ export default function App() {
     <footer className="bottom-bar"><div className="controls" aria-label="Heist controls"><div className="movement-control"><div className="direction-pad">{(['north','west','south','east'] as Direction[]).map((direction,index)=><button key={direction} className={`key-button ${direction}`} aria-label={`Move ${direction}`} disabled={!active} onClick={()=>onAction({type:'move',direction})}>{['W','A','S','D'][index]}</button>)}</div><span>Steer<small>WASD or arrows · keeps moving</small></span></div><span className="control-divider"/><button className="control-action interact-control" disabled={!active||!state?.interactionLabel} onClick={()=>{void audio.unlock();void interact();}}><kbd>E</kbd><span>{state?.interactionLabel||'No interaction nearby'}</span></button><button className="control-action" disabled={!active} onClick={()=>onAction({type:'wait'})}><kbd className="wide-key">SPACE</kbd><span>Brake</span></button></div><div className="footer-note"><span className="signal-dot"/>{isTitle?'A FICTIONAL NETWORK. REAL ACCESS DECISIONS.':state?.status==='paused'?'SIMULATION PAUSED':'SPACE STOPS YOU. THE SENTRIES KEEP MOVING.'}</div><div className="run-stats"><span className="chip-counter"><i/>{state?.collectedShards.length??0}<small> CHIPS</small></span><div className="turn-counter"><span className="eyebrow">TIME</span><strong>{clockText(state?.elapsedMs??0)}</strong></div></div></footer>
     {storageWarning&&<div className="save-warning" role="status">Browser storage is unavailable. Progress will last for this visit.</div>}
     {!state&&<div className="loading-screen"><span className="loading-orbit"/><h1>{error?'Connection interrupted.':'Opening the facility.'}</h1><p>{error||'PIP-07 is getting ready.'}</p>{error&&<button className="primary-button" onClick={()=>setRetry(value=>value+1)}>Reconnect</button>}</div>}
-    {state&&error&&<div className="error-banner" role="alert"><strong>Connection interrupted.</strong><span>{error}</span><button onClick={()=>{activeRequest.current?.abort();setError(null);setRetry(value=>value+1);}}>Reconnect</button></div>}
-    {screen!=='game'&&state&&<div className="campaign-layer" ref={overlayRef} role="dialog" aria-modal="true" tabIndex={-1} aria-label={screen==='missions'?'Mission selection':screen==='briefing'?'Mission briefing':screen==='defender'?'Defender policy lab':'Campaign complete'}>
+    {state&&error&&<div className="error-banner" ref={connectionErrorRef} role="alertdialog" aria-modal="true" aria-label="Connection interrupted"><strong>Connection interrupted.</strong><span>{error}</span><button onClick={()=>{activeRequest.current?.abort();setError(null);setRetry(value=>value+1);}}>Reconnect</button></div>}
+    {screen!=='game'&&state&&<div className="campaign-layer" ref={overlayRef} role="dialog" aria-modal={!error} tabIndex={-1} aria-label={screen==='missions'?'Mission selection':screen==='briefing'?'Mission briefing':screen==='defender'?'Defender policy lab':'Campaign complete'}>
       {screen==='missions'?<MissionSelect progress={progress} onSelect={id=>void openMission(id)} onBack={()=>void leaveScreen()} onDefender={()=>void openDefender()}/>:screen==='briefing'?<Briefing key={state.runId} level={level} firstVisit={introRequested||!progress.results[level.id]} intro={introRequested} reducedMotion={reducedMotion} onBegin={()=>void beginMission()} onBack={()=>setScreen('missions')}/>:screen==='defender'?<DefenderLab state={state.defender} busy={busy} reducedMotion={reducedMotion} onPatch={patch=>void command({type:'defender-patch',patch})} onBack={()=>setScreen('missions')} onComplete={()=>{if(state.defender?.success){setProgress(p=>({...p,defenderComplete:true}));setScreen('credits');}}}/>:<Credits progress={progress} onMissions={()=>setScreen('missions')} onDefender={()=>void openDefender()}/>}
     </div>}
-    {screen==='game'&&hasModal&&<div className={`modal-backdrop ${inspector?'inspector-backdrop':''}`}><div ref={overlayRef} className={inspector?'inspector-panel':state?.status==='won'?'modal-card debrief-card':'modal-card'} role="dialog" tabIndex={-1} aria-modal="true" aria-labelledby="overlay-title">
+    {screen==='game'&&hasModal&&<div className={`modal-backdrop ${inspector?'inspector-backdrop':''}`}><div ref={overlayRef} className={inspector?'inspector-panel':state?.status==='won'?'modal-card debrief-card':'modal-card'} role="dialog" tabIndex={-1} aria-modal={!error} aria-labelledby="overlay-title">
       {inspector?<><div className="inspector-header"><div><span className="eyebrow">BEHIND THE HEIST</span><h2 id="overlay-title">Real access decisions.</h2></div><button className="icon-button" onClick={()=>void toggleInspector()} disabled={busy} aria-label="Close inspector"><Icon kind="close"/></button></div><p className="inspector-description">A key represents a credential. Each gate checks an actor’s permission to access a resource. The local server makes these decisions; the browser cannot choose an identity or invent a win.</p><FieldGuide/><div className="inspection-summary"><span>Sector {state?.levelId}</span><span>{clockText(state?.elapsedMs??0)}</span>{fps!==null&&<span>{Math.round(fps)} FPS measured</span>}</div><div className="decision-list" tabIndex={0} aria-label="Recent authorization decisions">{!state?.decisions.length?<div className="empty-decisions"><Icon kind="key"/><p>No protected requests yet.</p></div>:[...state.decisions].reverse().map((decision,index)=><article className={`decision ${decision.allow?'allowed':'denied'}`} key={`${decision.turn}-${decision.actor}-${index}`}><div className="decision-top"><strong>{decision.allow?'ALLOW':'DENY'}</strong><span>MOVE {decision.turn}</span></div><div className="decision-actor">{decision.actor}<span>→</span>{decision.action}</div><p>{decision.reason}</p><dl><div><dt>Resource</dt><dd>{decision.resource}</dd></div><div><dt>Grant</dt><dd>{decision.grant||'Baseline permission'}</dd></div></dl></article>)}</div><button className="primary-button" onClick={()=>void toggleInspector()} disabled={busy}>Return to heist<Icon kind="arrow"/></button></>:restartConfirm?<><span className="eyebrow">A FRESH APPROACH</span><h2 id="overlay-title">Restart this sector?</h2><p>This run resets. Your completed missions and best results remain saved.</p><div className="modal-actions"><button className="primary-button" disabled={busy} onClick={()=>void cancelRestart()}>Keep this run<Icon kind="arrow"/></button><button className="secondary-button" disabled={busy} onClick={()=>void restart()}>Restart heist</button></div></>:state?.status==='paused'?<><span className="eyebrow">TAKE A BREATHER</span><h2 id="overlay-title">Ghost on standby.</h2><p>The drones, credentials and extraction clock are paused.</p><button className="primary-button" disabled={busy} onClick={()=>onAction({type:'resume'})}>Resume heist<Icon kind="play"/></button><div className="pause-options"><div className="pause-navigation"><button className="secondary-button" disabled={busy} onClick={()=>void askRestart()}>Restart heist</button><button className="secondary-button" disabled={busy} onClick={()=>void openMissions()}>Mission select</button></div><button className="setting-button" aria-pressed={reducedMotion} onClick={()=>setReducedMotion(value=>!value)}><span>Reduced motion</span><span className={`toggle ${reducedMotion?'on':''}`}><i/></span></button></div><FieldGuide/><div className="sound-settings" aria-label="Sound settings"><div className="sound-heading"><span>THE QUIET WAY IN</span><small>Original soundtrack</small></div><button className="setting-button" aria-pressed={musicEnabled} onClick={()=>{void audio.unlock();setMusicEnabled(value=>!value);}}><span>Music</span><span className={`toggle ${musicEnabled?'on':''}`}><i/></span></button><label className="music-volume"><span>Music level<output>{Math.round(musicVolume*100)}%</output></span><input aria-label="Music volume" type="range" min="0" max="100" step="5" value={Math.round(musicVolume*100)} onChange={event=>setMusicVolume(Number(event.target.value)/100)}/></label><button className="setting-button" aria-pressed={effectsEnabled} onClick={()=>setEffectsEnabled(value=>!value)}><span>Sound effects</span><span className={`toggle ${effectsEnabled?'on':''}`}><i/></span></button></div><div className="pause-key-hint"><kbd>ESC</kbd> to resume <span>·</span><kbd>R</kbd> to restart</div></>:state?.status==='won'?<Debrief key={state.runId} state={state} onNext={()=>state.levelId<5?void openMission(state.levelId+1):void openDefender()} onReplay={()=>void restart()} onMissions={()=>void openMissions()} onInspect={()=>void toggleInspector()}/>:<><div className="outcome-mark loss-mark">×</div><span className="eyebrow">SIGNAL LOST</span><h2 id="overlay-title">Caught in the act.</h2><p>{state?.message||'A sentry reached your tile.'}</p><p className="loss-tip">Check the whole maze before committing to a narrow branch. Optional chips are not worth getting cornered.</p><button className="primary-button" disabled={busy} onClick={()=>void restart()}>Try again<Icon kind="arrow"/></button><div className="debrief-links"><button className="text-button" onClick={()=>void openMissions()}>Mission select</button><button className="text-button" onClick={()=>void toggleInspector()}>Inspect what happened</button></div></>}
     </div></div>}
   </main>;

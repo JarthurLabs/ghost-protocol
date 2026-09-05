@@ -1,0 +1,267 @@
+{
+  "scope": "Local realtime server on loopback, not public internet performance",
+  "transport": "websocket",
+  "browser": "152.0.7977.77",
+  "campaignFrontend": "index-C2AgsoJ0.js",
+  "recoveryFrontend": "index-C2AgsoJ0.js",
+  "missions": [
+    {
+      "levelId": 1,
+      "elapsedMs": 13160,
+      "sentries": 1
+    },
+    {
+      "levelId": 2,
+      "elapsedMs": 9560,
+      "sentries": 1
+    },
+    {
+      "levelId": 3,
+      "elapsedMs": 11360,
+      "sentries": 2
+    },
+    {
+      "levelId": 4,
+      "elapsedMs": 12620,
+      "sentries": 2
+    },
+    {
+      "levelId": 5,
+      "elapsedMs": 15140,
+      "sentries": 3
+    }
+  ],
+  "defender": [
+    {
+      "status": "result",
+      "patch": "open",
+      "attackerDenied": false,
+      "maintenanceAllowed": true,
+      "success": false,
+      "decisions": [
+        {
+          "turn": 0,
+          "actor": "intruder",
+          "action": "collect",
+          "resource": "vault-package",
+          "grant": "maintenance",
+          "allow": true,
+          "reason": "temporary role permits this resource"
+        },
+        {
+          "turn": 0,
+          "actor": "maintenance",
+          "action": "service",
+          "resource": "service-device",
+          "grant": "maintenance",
+          "allow": true,
+          "reason": "temporary role permits this resource"
+        }
+      ]
+    },
+    {
+      "status": "result",
+      "patch": "shutdown",
+      "attackerDenied": true,
+      "maintenanceAllowed": false,
+      "success": false,
+      "decisions": [
+        {
+          "turn": 0,
+          "actor": "intruder",
+          "action": "collect",
+          "resource": "vault-package",
+          "grant": "maintenance",
+          "allow": false,
+          "reason": "role revoked"
+        },
+        {
+          "turn": 0,
+          "actor": "maintenance",
+          "action": "service",
+          "resource": "service-device",
+          "grant": "maintenance",
+          "allow": false,
+          "reason": "role revoked"
+        }
+      ]
+    },
+    {
+      "status": "result",
+      "patch": "least-privilege",
+      "attackerDenied": true,
+      "maintenanceAllowed": true,
+      "success": true,
+      "decisions": [
+        {
+          "turn": 0,
+          "actor": "intruder",
+          "action": "collect",
+          "resource": "vault-package",
+          "grant": "maintenance",
+          "allow": false,
+          "reason": "outside grant scope"
+        },
+        {
+          "turn": 0,
+          "actor": "maintenance",
+          "action": "service",
+          "resource": "service-device",
+          "grant": "maintenance",
+          "allow": true,
+          "reason": "temporary role permits this resource"
+        }
+      ]
+    }
+  ],
+  "practiceModes": [
+    "borrowed",
+    "expiry",
+    "scopes"
+  ],
+  "interactionChecks": [
+    {
+      "check": "Empty-floor control disabled; keyboard E explains missing target; reachable E collects named key with visible confirmation",
+      "passed": true
+    },
+    {
+      "level": 1,
+      "check": "No lockdown action or revocation from archive side",
+      "passed": true
+    },
+    {
+      "level": 1,
+      "check": "Visible named door action performed live lockdown, removed action and confirmed success",
+      "beforeLabel": "Lock Vault behind you",
+      "afterLabel": null,
+      "passed": true
+    },
+    {
+      "level": 2,
+      "check": "Visible named door action performed live lockdown, removed action and confirmed success",
+      "beforeLabel": "Lock Vault behind you",
+      "afterLabel": null,
+      "passed": true
+    },
+    {
+      "level": 3,
+      "check": "Named timer renewal confirms its result",
+      "grant": "vault",
+      "passed": true
+    },
+    {
+      "level": 3,
+      "check": "Visible named door action performed live lockdown, removed action and confirmed success",
+      "beforeLabel": "Lock Vault behind you",
+      "afterLabel": null,
+      "passed": true
+    },
+    {
+      "level": 4,
+      "check": "Visible named door action performed live lockdown, removed action and confirmed success",
+      "beforeLabel": "Lock Vault behind you",
+      "afterLabel": null,
+      "passed": true
+    },
+    {
+      "level": 5,
+      "check": "Named timer renewal confirms its result",
+      "grant": "vault",
+      "passed": true
+    },
+    {
+      "level": 5,
+      "check": "Named timer renewal confirms its result",
+      "grant": "vault",
+      "passed": true
+    },
+    {
+      "level": 5,
+      "check": "Visible named door action performed live lockdown, removed action and confirmed success",
+      "beforeLabel": "Lock Vault behind you",
+      "afterLabel": null,
+      "passed": true
+    }
+  ],
+  "savedProgress": {
+    "version": 1,
+    "unlocked": 5,
+    "results": {
+      "1": {
+        "bestMs": 13160,
+        "bestChips": 36,
+        "completions": 1
+      },
+      "2": {
+        "bestMs": 9560,
+        "bestChips": 36,
+        "completions": 1
+      },
+      "3": {
+        "bestMs": 11360,
+        "bestChips": 45,
+        "completions": 1
+      },
+      "4": {
+        "bestMs": 12620,
+        "bestChips": 47,
+        "completions": 1
+      },
+      "5": {
+        "bestMs": 15140,
+        "bestChips": 61,
+        "completions": 1
+      }
+    },
+    "introSeen": true,
+    "defenderComplete": true,
+    "seenRuns": [
+      "80759c01-748f-4014-8850-b768804c04ed",
+      "a26b56f8-1dd3-4d5b-8f0f-c622ef9a4c09",
+      "f43e247a-aacd-45bf-bba8-8694c4528761",
+      "2cd77430-3252-4820-80d7-0db2c5cac52d",
+      "26540457-ad89-4345-a4c7-ed987d0f7fca"
+    ]
+  },
+  "directionAcknowledgements": {
+    "samples": 91,
+    "medianMs": 11.618207999999868,
+    "p95Ms": 15.558625000001484
+  },
+  "browserErrors": [],
+  "recovery": {
+    "startupTimeout": true,
+    "render": {
+      "stats": {
+        "fps": 53,
+        "drawCalls": 188,
+        "triangles": 235326,
+        "pixelRatio": 1,
+        "renderer": "WebKit WebGL",
+        "framesMeasured": 80,
+        "meanFrameMs": 18.935
+      },
+      "now": 2961.300000011921,
+      "visibility": "visible",
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080,
+        "top": 0,
+        "right": 1920,
+        "bottom": 1080,
+        "left": 0
+      }
+    },
+    "frames": {
+      "elapsed": 489.09999999403954,
+      "first": 2966.6,
+      "last": 3449.9
+    },
+    "keyboardReconnect": true,
+    "reconnectedPaused": true,
+    "resumed": true
+  },
+  "inputMethod": "Actual keyboard and UI buttons, guided only by observed public connection snapshots. No actor or progress injection."
+}
