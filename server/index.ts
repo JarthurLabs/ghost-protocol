@@ -126,7 +126,12 @@ export function createGameServer(options: ServerOptions = {}) {
       const host = requestHost(request,options.publicOrigin);
       const pathname = new URL(request.url ?? '/', `http://${host}`).pathname;
       if (pathname === '/api/health' && request.method === 'GET') return json(response, 200, { game: 'ghost-protocol' });
-      if (pathname === '/api/transport' && request.method === 'GET') return json(response,200,{type:options.realtime?'websocket':'http'});
+      if (pathname === '/api/transport' && request.method === 'GET') {
+        sameOrigin(request,host,false,options.publicOrigin);
+        return json(response,200,options.realtime
+          ? {type:'websocket',controllerAvailable:!findSession(request)?.socket}
+          : {type:'http'});
+      }
       if (pathname === '/api/state' && request.method === 'GET') {
         sameOrigin(request, host, false,options.publicOrigin);
         let session = findSession(request);

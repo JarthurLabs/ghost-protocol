@@ -11,6 +11,7 @@ import { loadProgress, saveProgress, recordCompletion } from './progress';
 import './learning.css';
 import { audio, type Cue } from './audio';
 import { LiveGameConnection } from './liveConnection';
+import { discoverTransport } from './transportBootstrap';
 
 function savedBoolean(key: string, fallback: boolean) {
   try { const value = localStorage.getItem(key); return value === null ? fallback : value === 'true'; }
@@ -185,16 +186,7 @@ export default function App() {
     };
     const connect=async()=>{
       try{
-        const transportController=new AbortController();
-        const abortTransport=()=>transportController.abort();controller.signal.addEventListener('abort',abortTransport,{once:true});
-        const timeout=setTimeout(()=>transportController.abort(Error('The game connection timed out. Reconnect to try again.')),4000);
-        let transport:{type:string};
-        try{
-          const response=await fetch('/api/transport',{credentials:'same-origin',signal:transportController.signal});
-          if(!response.ok&&response.status!==404)throw Error('The game connection is unavailable. Reconnect to try again.');
-          transport=response.ok?await response.json():{type:'http'};
-        }
-        finally{clearTimeout(timeout);controller.signal.removeEventListener('abort',abortTransport);}
+        const transport=await discoverTransport(controller.signal);
         if(controller.signal.aborted)return;
         if(transport.type!=='websocket'){transportReady.current=true;busyRef.current=false;setBusy(false);poll();return;}
         const initial=await requestState('/api/state',{},controller.signal);

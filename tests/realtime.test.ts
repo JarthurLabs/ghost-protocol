@@ -6,6 +6,7 @@ import { request as httpRequest } from 'node:http';
 import { createGameServer } from '../server/index.js';
 import type { GameState } from '../shared/types.js';
 import { LiveGameConnection } from '../src/liveConnection.js';
+import { discoverTransport } from '../src/transportBootstrap.js';
 
 const server = createGameServer({realtime:true});
 let base='';
@@ -35,7 +36,17 @@ async function rejected(cookie:string,origin:string){
 
 test('realtime mode advertises a live connection without changing the approved local default',async()=>{
  assert.equal((await fetch(base+'/api/transport')).status,200);
- assert.deepEqual(await (await fetch(base+'/api/transport')).json(),{type:'websocket'});
+ assert.deepEqual(await (await fetch(base+'/api/transport')).json(),{type:'websocket',controllerAvailable:true});
+});
+test('reload can check controller release without attempting a conflicting socket',async()=>{
+ const a=await session(),client=await connect(a.cookie);
+ const transport=()=>fetch(base+'/api/transport',{headers:{Cookie:a.cookie,Origin:base}});
+ assert.equal((await (await transport()).json()).controllerAvailable,false);
+ const foreign=await fetch(base+'/api/transport',{headers:{Cookie:a.cookie,Origin:'https://example.invalid'}});
+ assert.equal(foreign.status,403);
+ client.socket.close();await new Promise<void>(resolve=>client.socket.once('close',()=>resolve()));
+ assert.equal((await (await transport()).json()).controllerAvailable,true);
+ const replacement=await connect(a.cookie);replacement.socket.close();
 });
 test('socket identity is same-origin and a second controller cannot fork an attempt',async()=>{
  const a=await session();
@@ -46,6 +57,23 @@ test('socket identity is same-origin and a second controller cannot fork an atte
  const response=await fetch(base+'/api/command',{method:'POST',headers:{Cookie:a.cookie,Origin:base,'Content-Type':'application/json'},body:'{"type":"start"}'});
  assert.equal(response.status,409);
  client.socket.close();
+});
+test('reload bootstrap waits for socket release and cancellation leaves the current controller intact',async()=>{
+ const a=await session(),client=await connect(a.cookie);
+ const request:typeof fetch=(url,options)=>fetch(base+String(url),{...options,headers:{Cookie:a.cookie,Origin:base}});
+ const cancelled=new AbortController();
+ const waiting=discoverTransport(cancelled.signal,request);
+ await delay(80);cancelled.abort(Error('Page left'));
+ await assert.rejects(waiting,/Page left/);
+ assert.equal((await client.send({type:'start'})).state.status,'playing');
+ let ready=false;
+ const reloading=discoverTransport(new AbortController().signal,request).then(value=>{ready=true;return value;});
+ await delay(80);assert.equal(ready,false,'A reload must not race the still-owned socket');
+ client.socket.close();
+ assert.equal((await reloading).controllerAvailable,true);
+ const replacement=await connect(a.cookie);
+ assert.equal(replacement.frames.find(f=>f.kind==='state').state.status,'paused');
+ replacement.socket.close();
 });
 test('ordered socket commands preserve server authorization and reject duplicate actions',async()=>{
  const a=await session(),b=await session(),client=await connect(a.cookie);
@@ -59,6 +87,25 @@ test('ordered socket commands preserve server authorization and reject duplicate
  const other=await (await fetch(base+'/api/state',{headers:{Cookie:b.cookie}})).json();assert.equal(other.status,'title');
  for(const field of ['holders','playerClockMs','sentryClockMs','patrolIndex','extractionHoldMs'])assert.equal(field in started.state,false);
  client.socket.close();
+});
+test('reload bootstrap recovers when the old connection disappears without a close frame',async()=>{
+ const a=await session(),client=await connect(a.cookie);await client.send({type:'start'});
+ const request:typeof fetch=(url,options)=>fetch(base+String(url),{...options,headers:{Cookie:a.cookie,Origin:base}});
+ const transport=await discoverTransport(new AbortController().signal,request);
+ assert.equal(transport.controllerAvailable,true);
+ const replacement=await connect(a.cookie);
+ assert.equal(replacement.frames.find(f=>f.kind==='state').state.status,'paused');
+ assert.equal((await replacement.send({type:'resume'})).state.status,'playing');
+ replacement.socket.close();
+});
+test('a second tab times out without taking over a live controller',async()=>{
+ const a=await session(),client=await connect(a.cookie);
+ const heartbeat=setInterval(()=>{if(client.socket.readyState===1)client.socket.send('{"kind":"heartbeat"}');},500);
+ const request:typeof fetch=(url,options)=>fetch(base+String(url),{...options,headers:{Cookie:a.cookie,Origin:base}});
+ try{
+  await assert.rejects(discoverTransport(new AbortController().signal,request),/Another game connection is still active/);
+  assert.equal((await client.send({type:'start'})).state.status,'playing');
+ }finally{clearInterval(heartbeat);client.socket.close();}
 });
 test('socket pushes independent patrol updates and close pauses before reconnect',async()=>{
  const a=await session(),client=await connect(a.cookie);const started=await client.send({type:'start'});
