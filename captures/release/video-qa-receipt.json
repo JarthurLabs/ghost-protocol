@@ -1,0 +1,75 @@
+{
+  "file": "ghost-protocol-linkedin-4k.mp4",
+  "durationSeconds": 80.2,
+  "width": 3840,
+  "height": 2160,
+  "frames": 2005,
+  "fps": 25,
+  "videoCodec": "H264 High",
+  "videoCrf": 17,
+  "pixelFormat": "yuv420p",
+  "color": "Rec.709 primaries, transfer and matrix; limited range",
+  "audioCodec": "AAC LC stereo",
+  "audioSampleRate": 48000,
+  "requestedAudioBitrate": 320000,
+  "measuredIntegratedLufs": -17.05,
+  "measuredTruePeakDbtp": -1.5,
+  "measuredLra": 2.7,
+  "fullDecodePassed": true,
+  "faststart": true,
+  "bytes": 44025811,
+  "sha256": "7c2ae37dcec028242e19c784271e74e5b822bc208170e6e100633bf9b0c02989",
+  "mp4Atoms": [
+    {
+      "type": "ftyp",
+      "offset": 0,
+      "size": 32
+    },
+    {
+      "type": "moov",
+      "offset": 32,
+      "size": 62301
+    },
+    {
+      "type": "free",
+      "offset": 62333,
+      "size": 8
+    },
+    {
+      "type": "mdat",
+      "offset": 62341,
+      "size": 43963470
+    }
+  ],
+  "captions": "ghost-protocol-linkedin.srt",
+  "poster": "ghost-protocol-poster.png",
+  "contactSheet": "ghost-protocol-contact-sheet.png",
+  "edit": {
+    "introSeconds": 14,
+    "outroSeconds": 8,
+    "gameplayRate": 0.85,
+    "defenderRate": 1,
+    "narration": false,
+    "originalMusic": true,
+    "actualEffects": true
+  },
+  "source": "Fresh approved e3ad76c gameplay captured at native 3840 by 2160. Isolated browser-only enlargement of the DOM defender interface is also recorded at native 3840 by 2160. No game footage or still is upscaled.",
+  "links": {
+    "play": "https://ghost-protocol.jamalarthur1.chatgpt.site",
+    "verification": "Parent confirmed anonymous public access during composition.",
+    "github": null,
+    "reason": "GitHub sign-in and repository creation remain pending. No invented GitHub address is displayed. Closing card says Build story in the post."
+  },
+  "qaLimits": "Full audiovisual decode and loudness measurements are technical checks. Representative native frames, transitions and normal-scale layout are visually reviewed. The model cannot hear an audio preview; no subjective auditory review is claimed. Native source cadence is measured in the capture receipt, not claimed to be a human playtime measurement.",
+  "metadataVerifiedFromDecode": true,
+  "visualReview": {
+    "contactSheet": true,
+    "nativeIntroAndClosingCards": true,
+    "nativeGateAndTransitCaptions": true,
+    "nativeDefenderPanelAndCaptions": true,
+    "overlap": false,
+    "captionFontPixels": 88,
+    "safeSideMarginPixels": 180,
+    "nativeGameSourceUnchanged": true
+  }
+}

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.runtime/
+logs/
+.DS_Store
+*.tsbuildinfo
+.env
+captures/raw/
+captures/inspection-*.png
+captures/verification-*.png
+captures/**/raw/
+captures/**/verification-*.png
+
+captures/campaign/probe/
+captures/**/verification-*.jpg
+captures/campaign/learning/*initial-probe-failure.json

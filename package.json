@@ -1,0 +1,35 @@
+{
+  "name": "ghost-protocol",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "build": "tsc --noEmit && vite build",
+    "build:hosted": "tsc --noEmit && node scripts/build-hosted.mjs",
+    "start": "NODE_ENV=production node --import tsx server/index.ts",
+    "verify:browser": "node --import tsx scripts/campaign-browser-check.mjs",
+    "demo": "node --import tsx scripts/demo.ts",
+    "verify:audio": "node scripts/audio-check.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "three": "0.185.1"
+  },
+  "devDependencies": {
+    "@openai/sites-vite-plugin": "^0.2.0",
+    "@types/node": "24.3.0",
+    "@types/react": "19.1.12",
+    "@types/react-dom": "19.1.9",
+    "@types/three": "0.183.1",
+    "playwright": "1.58.2",
+    "tsx": "4.23.13",
+    "typescript": "5.9.3",
+    "vite": "8.2.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

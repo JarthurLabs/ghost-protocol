@@ -1,0 +1,57 @@
+.access-practice {
+  margin-top: 20px;
+  padding: 20px 22px 16px;
+  border: 1px solid #80bfba42;
+  border-radius: 12px;
+  background: linear-gradient(125deg, #142b35, #152832 75%, #263046);
+  color: #eff0e4;
+}
+.access-practice-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #a6bdc0; font-size: 10px; letter-spacing: .7px; }
+.access-practice-top > :first-child { color: #92e2d1; text-transform: uppercase; font-weight: 650; }
+.access-practice-heading h2 { margin: 13px 0 6px; color: #f1f0e4; font-size: 18px; line-height: 1.35; font-weight: 570; letter-spacing: -.25px; }
+.access-practice-heading p { margin: 0; color: #bdced0; font-size: 12px; line-height: 1.65; max-width: 69ch; }
+.access-practice-keys { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 15px 0 10px; }
+.access-practice-key { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border: 1px solid currentColor; border-radius: 5px; font-size: 10px; line-height: 1.2; }
+.access-practice-key i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.access-practice-key b { font-weight: 450; opacity: .8; }
+.access-practice .is-vault { color: #edc16d; }
+.access-practice .is-transit { color: #8de6d4; }
+.access-practice-clock { margin-left: auto; color: #ccd4d2; font-size: 11px; font-variant-numeric: tabular-nums; }
+.access-practice-clock span { color: #719096; padding: 0 5px; }
+.access-practice-decisions { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.access-practice-decision { display: grid; grid-template-columns: 1fr 1.15fr 1.15fr; align-items: center; gap: 12px; min-height: 56px; padding: 7px 12px; border: 1px solid #97b7bc18; border-radius: 6px; background: #0d202b75; }
+.access-practice-holder, .access-practice-request { display: flex; align-items: center; gap: 9px; font-size: 12px; }
+.access-practice-holder { color: #d4e4dc; }
+.access-practice-holder.is-copy { color: #eeaba2; }
+.access-practice-holder-icon { width: 30px; height: 30px; flex: 0 0 30px; }
+.access-practice-request { gap: 8px; }
+.access-practice-gate-icon { width: 23px; height: 27px; flex: 0 0 23px; }
+.access-practice-arrow { color: #718d98; margin-right: 5px; }
+.access-practice-result { display: flex; flex-direction: column; gap: 4px; justify-self: end; min-width: 146px; }
+.access-practice-result strong { font-size: 11px; font-weight: 700; }
+.is-allowed .access-practice-result strong { color: #93e4ce; }
+.is-denied .access-practice-result strong { color: #ffb19f; }
+.access-practice-result small { color: #aabdbe; font-size: 10px; line-height: 1.4; }
+.access-practice-warning { margin: 11px 0 0; padding: 9px 11px; border-left: 2px solid #edc16d; border-radius: 0 4px 4px 0; background: #edc16d09; color: #ecd3ab; font-size: 12px; line-height: 1.55; }
+.access-practice-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 15px; }
+.access-practice-bottom > p { margin: 0; color: #94aaaf; font-size: 10px; line-height: 1.5; }
+.access-practice-bottom > div { display: flex; align-items: center; gap: 13px; }
+.access-practice-reset { background: transparent; padding: 8px 2px; color: #bdcdce; font-size: 11px; }
+.access-practice-reset:disabled { opacity: .35; cursor: default; }
+.access-practice-next { display: inline-flex; justify-content: center; align-items: center; gap: 14px; min-height: 37px; padding: 9px 13px; border: 1px solid #88d6c77d; border-radius: 5px; background: #86dcc216; color: #b7eee1; font-size: 11px; font-weight: 600; transition: background 120ms ease, border-color 120ms ease; }
+.access-practice-next:hover { background: #86dcc22c; border-color: #97e1d1; }
+.access-practice button:focus-visible { outline: 2px solid #9ae5d6; outline-offset: 3px; }
+.access-practice-announcement { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.learning-reduced .access-practice *, .learning-reduced .access-practice *::before, .learning-reduced .access-practice *::after { transition: none !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .access-practice *, .access-practice *::before, .access-practice *::after { transition: none !important; animation: none !important; } }
+@media (max-width: 680px) {
+  .access-practice { padding: 17px 14px 14px; }
+  .access-practice-decision { grid-template-columns: 1fr 1.1fr 1fr; gap: 7px; padding: 8px; }
+  .access-practice-holder, .access-practice-request { font-size: 11px; gap: 5px; }
+  .access-practice-holder-icon { width: 23px; height: 25px; flex-basis: 23px; }
+  .access-practice-arrow { display: none; }
+  .access-practice-result { min-width: 0; justify-self: start; }
+  .access-practice-bottom { align-items: stretch; flex-direction: column; }
+  .access-practice-bottom > div { justify-content: flex-end; }
+  .access-practice-clock { margin-left: 0; }
+}

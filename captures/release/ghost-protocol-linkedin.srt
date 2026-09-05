@@ -1,0 +1,75 @@
+1
+00:00:00,000 --> 00:00:04,500
+GHOST PROTOCOL
+A browser heist that teaches cybersecurity.
+
+2
+00:00:04,500 --> 00:00:09,000
+Keys grant access. Copies do too.
+In this fictional lab, a pursuer copies your Vault key.
+
+3
+00:00:09,000 --> 00:00:14,000
+Revoke the key. Keep your way out.
+Disable exposed access without stopping unrelated work.
+
+4
+00:00:14,220 --> 00:00:19,500
+A digital key opens specific doors.
+
+5
+00:00:19,940 --> 00:00:23,810
+In this lab, the pursuer
+copies your Vault key.
+
+6
+00:00:23,940 --> 00:00:27,180
+Cross into cyan.
+Lock Vault behind you.
+
+7
+00:00:27,310 --> 00:00:33,310
+Disable the key.
+Its copy stops working too.
+
+8
+00:00:33,440 --> 00:00:35,860
+Check that access is denied.
+
+9
+00:00:36,320 --> 00:00:40,600
+Vault and Transit
+are separate permissions.
+
+10
+00:00:40,750 --> 00:00:46,520
+Each key opens its own gates.
+
+11
+00:00:47,000 --> 00:00:50,990
+Lock Vault.
+Leave Transit available.
+
+12
+00:00:51,140 --> 00:00:55,960
+Copied Vault access is blocked.
+
+13
+00:00:56,140 --> 00:01:00,890
+Your exit still works.
+
+14
+00:01:01,480 --> 00:01:05,600
+Now take the defender’s seat.
+
+15
+00:01:05,820 --> 00:01:11,880
+Block the risky action.
+Keep legitimate work moving.
+
+16
+00:01:12,200 --> 00:01:20,200
+Your turn. Find your way out.
+Play in your browser • See how it was built
+ghost-protocol.jamalarthur1.chatgpt.site
+Build story in the post

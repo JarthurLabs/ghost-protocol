@@ -1,0 +1,26 @@
+name: Verify Ghost Protocol
+on: [push, pull_request]
+permissions:
+  contents: read
+concurrency:
+  group: ghost-protocol-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  campaign:
+    name: Campaign, authorization and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Verify engine, HTTP boundaries and saved progress
+        run: npm test
+      - name: Type-check and build the production frontend
+        run: npm run build
+      - name: Complete all missions and defender policy replays
+        run: npm run demo
