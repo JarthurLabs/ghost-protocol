@@ -2,7 +2,7 @@ services:
   - type: web
     name: ghost-protocol
     runtime: node
-    plan: 0.5c-512mb
+    plan: free
     region: singapore
     numInstances: 1
     autoDeployTrigger: off
