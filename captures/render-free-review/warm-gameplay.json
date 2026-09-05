@@ -1,0 +1,79 @@
+{
+  "source": "fa78de9eb633e1149347f23ea5d841d93f3f4f8d",
+  "base": "https://ghost-protocol-b74p.onrender.com",
+  "transport": "websocket",
+  "missions": [
+    {
+      "id": 1,
+      "elapsedMs": 13160,
+      "sentries": 1
+    },
+    {
+      "id": 2,
+      "elapsedMs": 9740,
+      "sentries": 1
+    },
+    {
+      "id": 3,
+      "elapsedMs": 11540,
+      "sentries": 2
+    },
+    {
+      "id": 4,
+      "elapsedMs": 12620,
+      "sentries": 2
+    },
+    {
+      "id": 5,
+      "elapsedMs": 15500,
+      "sentries": 3
+    }
+  ],
+  "directionLatency": {
+    "samples": 91,
+    "medianMs": 37.11754199999996,
+    "p95Ms": 42.077250000002095
+  },
+  "stats": {
+    "fps": 60,
+    "drawCalls": 306,
+    "triangles": 459544,
+    "pixelRatio": 1,
+    "renderer": "WebKit WebGL",
+    "framesMeasured": 600,
+    "meanFrameMs": 16.666166666666687
+  },
+  "reloadChecks": [
+    {
+      "attempt": 1,
+      "newSocket": true,
+      "preservedRun": true,
+      "paused": true,
+      "resumeAndPauseAcknowledged": true,
+      "readyMs": 502.03116600000067
+    },
+    {
+      "attempt": 2,
+      "newSocket": true,
+      "preservedRun": true,
+      "paused": true,
+      "resumeAndPauseAcknowledged": true,
+      "readyMs": 2373.098708999998
+    },
+    {
+      "attempt": 3,
+      "newSocket": true,
+      "preservedRun": true,
+      "paused": true,
+      "resumeAndPauseAcknowledged": true,
+      "readyMs": 2375.9077909999905
+    }
+  ],
+  "errors": [],
+  "progress": {
+    "completed": 5,
+    "defenderComplete": true
+  },
+  "idleSince": "2026-09-05T18:25:13.000Z",
+  "earliestColdNavigation": "2026-09-05T18:43:13.000Z"
+}

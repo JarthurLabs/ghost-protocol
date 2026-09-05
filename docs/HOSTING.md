@@ -1,8 +1,18 @@
-# Browser release status
+# Free hosting trial
+
+The [free Render build](https://ghost-protocol-b74p.onrender.com) now completes the five-mission campaign, capture and retry, all learning practices, the defender finale, and three reload/reconnect checks with zero browser errors. Public source revision: fa78de9eb633e1149347f23ea5d841d93f3f4f8d. The selected service is one free instance in Singapore, with automatic deploy off.
+
+On September 6, 2026, this Mac-to-Singapore test measured direction acknowledgement at 37.1 milliseconds median and 42.1 milliseconds at the ninety-fifth percentile across 91 inputs. Rendering measured 60 frames per second at 1920 by 1080. These are a single route and machine, not a worldwide performance or concurrent-player guarantee. [Actual screenshots and compact gameplay receipt](../captures/render-free-review/VERIFICATION.md).
+
+The first trial exposed a reload conflict while the prior controller remained briefly connected. The client now waits for ownership to release. Three real reloads preserved the attempt in paused state, accepted Resume and Pause, and preserved completed progress. The second-controller restriction remains in place. All 96 tests and the production build pass.
+
+After more than eighteen minutes with all known connections closed, the first usable title and connection arrived in 24.85 seconds; the first real input was acknowledged at 25.29 seconds. Immediate warm reload was usable in 2.51 seconds. The wake-up page, automatic successful navigation and new process-start logs were recorded. Completed campaign progress survived; the unfinished attempt reset. One expected provider HTTP 503 wake-up response occurred, followed by zero game-runtime errors. [Render documents](https://render.com/docs/free) a 15-minute idle threshold and about a minute to wake; this observed visit was faster, but future waits can differ. The original Sites URL stays unchanged during this evaluation. No paid plan, payment method or LinkedIn post was added.
+
+## Earlier hosting evidence
 
 The deployment at https://ghost-protocol.jamalarthur1.chatgpt.site is public with Nicholas’s explicit approval. It serves the approved game and a separate Worker adapter around the same server engine. Page loading, session creation, isolation, introduction, practice, pause and restart have been verified. It is not yet an accepted online gameplay release.
 
-## What the playthrough found
+## Original Sites playthrough
 
 The first public control-driven run measured a median of301 milliseconds for title-state reads,545 milliseconds for playing-state reads, and549 milliseconds for commands. Direction-key acknowledgment had a median of1,075 milliseconds including513 milliseconds queued behind another request. The player moves one tile every180 milliseconds. This produces a meaningful steering delay.
 
@@ -26,4 +36,4 @@ Diagnostic version 4 returned HTTP 200 for an internal runtime check: WebSocketP
 
 A separate persistent Node option now sends commands and snapshots over one authenticated, ordered WebSocket. It preserves the approved local HTTP mode and the unchanged game engine. Its local browser check completed all five missions, actual capture and retry, Vault lockdown with Transit retained, the defender finale and earned progress after reload. The direction-acknowledgement median was 11.9 milliseconds across 91 commands, with a 15.3-millisecond ninety-fifth percentile. These are local measurements, not a claim about an internet host.
 
-The proposed Render deployment is prepared in render.yaml. No Render account or resource has been created, and no charge has been authorized. It uses one persistent instance; active attempts are in memory and reset on a process restart. Completed mission progress remains in browser storage. The server limits live connections to 32 and retained sessions to 256; these are safety caps, not a verified player-capacity claim. [Deployment details and approval boundary](REALTIME_REPAIR.md).
+That replacement was subsequently deployed on the explicitly approved free plan. Current results are at the top of this document. It uses one persistent instance; active attempts are in memory and reset on a process restart. Completed mission progress remains in browser storage. The server limits live connections to 32 and retained sessions to 256; these are safety caps, not a verified player-capacity claim. [Deployment details and approval boundary](REALTIME_REPAIR.md).

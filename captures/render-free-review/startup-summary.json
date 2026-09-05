@@ -1,0 +1,82 @@
+{
+  "source": "fa78de9eb633e1149347f23ea5d841d93f3f4f8d",
+  "base": "https://ghost-protocol-b74p.onrender.com",
+  "passed": true,
+  "startedAt": "2026-09-05T18:43:40.857Z",
+  "finishedAt": "2026-09-05T18:44:26.308Z",
+  "idleEvidence": {
+    "verified": true,
+    "since": "2026-09-05T18:25:13.000Z",
+    "elapsedMs": 1107855,
+    "scope": "Local elapsed time only; this cannot prove that no other client contacted the host."
+  },
+  "measurements": [
+    {
+      "name": "cold",
+      "firstResponseMs": 2222.9,
+      "readyMs": 24848.9,
+      "firstInputAcknowledgedMs": 25293.5,
+      "inputRoundTripMs": 45,
+      "readyScreenshotMs": 231.3,
+      "documents": [
+        {
+          "atMs": 2222.9,
+          "status": 503,
+          "url": "https://ghost-protocol-b74p.onrender.com/"
+        },
+        {
+          "atMs": 24401.1,
+          "status": 200,
+          "url": "https://ghost-protocol-b74p.onrender.com/"
+        }
+      ],
+      "bundleUrls": [
+        "https://ghost-protocol-b74p.onrender.com/assets/index-id2APJHB.js"
+      ],
+      "loadingPageObserved": true,
+      "loadingPageText": "01:43:43 INCOMING HTTP REQUEST DETECTED ...\n01:43:46 SERVICE WAKING UP ...\n__| |__________",
+      "unfinishedAttemptReset": true
+    },
+    {
+      "name": "warm",
+      "firstResponseMs": 50.9,
+      "readyMs": 2510.3,
+      "firstInputAcknowledgedMs": 2789.3,
+      "inputRoundTripMs": 37.9,
+      "readyScreenshotMs": 206.9,
+      "documents": [
+        {
+          "atMs": 50.9,
+          "status": 200,
+          "url": "https://ghost-protocol-b74p.onrender.com/"
+        }
+      ],
+      "bundleUrls": [
+        "https://ghost-protocol-b74p.onrender.com/assets/index-id2APJHB.js"
+      ],
+      "loadingPageObserved": false
+    }
+  ],
+  "progressPreserved": true,
+  "completedMissions": 5,
+  "defenderComplete": true,
+  "gameRuntimeErrors": [],
+  "startupErrors": [
+    {
+      "phase": "cold",
+      "scope": "startup",
+      "kind": "console",
+      "message": "Failed to load resource: the server responded with a status of 503 ()",
+      "location": {
+        "url": "https://ghost-protocol-b74p.onrender.com/",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "providerRestartLog": {
+    "startCommandAt": "2026-09-05T18:43:55Z",
+    "serverReadyAt": "2026-09-05T18:44:00Z"
+  },
+  "interpretation": "After more than eighteen minutes with all known game connections closed, Render displayed SERVICE WAKING UP, restarted the process, and then served the game. This is one observed visit, not a guaranteed delay for all players."
+}

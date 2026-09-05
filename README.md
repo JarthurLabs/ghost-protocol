@@ -14,7 +14,7 @@ I’m Nicholas. I built this with Codex, directing the gameplay, visual style, a
 
 The approved local game is preserved locally as `approved-game-2026-09-05`. This repository contains the release source snapshot and creation story; the full iteration history remains preserved in the original local repository. The captioned 4K review film is delivered separately; [its verification and captions are included here](captures/release/VERIFICATION.md).
 
-The [public deployment](https://ghost-protocol.jamalarthur1.chatgpt.site) opens without an account, but online steering has not passed the release check. It is a preview while the connection delay is being resolved. [Current hosting findings](docs/HOSTING.md).
+[Try the free browser build](https://ghost-protocol-b74p.onrender.com). The five-mission playthrough and reload checks pass on Render. After more than eighteen minutes idle, the tested first visit took about twenty-five seconds to become playable. An immediate warm reload took about two and a half seconds. Free hosting can sleep between visits; these are measured examples, not guaranteed load times. [Measured hosting results and limits](docs/HOSTING.md). The older Sites address remains the original preview during this trial.
 
 Use a keyboard and a desktop browser. Arrow keys or WASD steer; the drone keeps moving until it meets a wall. Space brakes. Escape pauses. R or **Restart level** offers a fresh attempt. M changes the camera.
 
@@ -50,7 +50,7 @@ The server owns actor positions, credentials, timers, permission decisions and o
 
 The fictional package pickup represents a key-leak incident. Reading a file does not automatically copy credentials in real systems. Narrowing access in the defender finale proves the two displayed requests; a real incident also calls for replacing the exposed credential. This is a teaching game, not a complete identity platform or security assessment.
 
-Campaign progress and preferences stay in browser storage. The game adds no player accounts, analytics tracking or online leaderboards. The hosting platform records its own traffic and operational logs. Local play uses Node. The current Sites preview uses a Worker and a database. A persistent Node server with a direct live connection is now prepared to remove the measured database delay. All modes reuse the same authoritative engine. [Repair and deployment plan](docs/REALTIME_REPAIR.md). A static host alone cannot enforce the game.
+Campaign progress and preferences stay in browser storage for that play address. Saved progress does not automatically transfer from the old Sites address to Render. The game adds no player accounts, analytics tracking or online leaderboards. The hosting platform records its own traffic and operational logs. Online play uses one Node server on Render, with commands and updates carried over an authenticated WebSocket. Active attempts are held in memory and reset if the process restarts; completed progress stays in the same browser. The approved local HTTP mode and online mode use the same authoritative engine. [Connection repair and deployment details](docs/REALTIME_REPAIR.md). A static host alone cannot enforce server authority.
 
 ## Verify it
 

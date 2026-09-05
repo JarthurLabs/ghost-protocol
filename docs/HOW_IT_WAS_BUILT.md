@@ -32,6 +32,8 @@ The browser displays the facility and sends commands. The server owns movement, 
 
 React and TypeScript handle the interface, Three.js renders the facility, and the music is synthesized in code. The repository includes rule tests, a runnable campaign demonstration, browser checks, and actual gameplay evidence.
 
+The local game felt good, but the first browser host added enough delay to make steering awkward. I moved the live connection to a small Node server and tested the whole campaign again. A working homepage, it turns out, is not the same as a playable game.
+
 ## What this project demonstrates
 
 Ghost Protocol is a simplified authorization model. Collecting the package triggers a scripted credential leak; reading data does not normally copy a key. Completing the campaign also does not prove that someone has learned the concepts.

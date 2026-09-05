@@ -18,11 +18,11 @@ await fs.mkdir(`${output}/raw`,{recursive:true});
 const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--use-gl=angle','--use-angle=metal']});
 const context=await browser.newContext({viewport:{width:1920,height:1080},deviceScaleFactor:1,...(recording?{recordVideo:{dir:`${output}/raw`,size:{width:1920,height:1080}}}:{})});
 const page=await context.newPage(),errors=[],trajectory=[],inputs=[],missions=[],markers=[];let epoch=Date.now(),audioOffsetSeconds=null;
-let liveState=null,usingLive=false;const liveFrames=[],liveSent=new Map(),liveLatencies=[];
+let liveState=null,usingLive=false,socketGeneration=0,stateGeneration=0;const liveFrames=[],liveSent=new Map(),liveLatencies=[];
 page.on('websocket',socket=>{
- if(!socket.url().endsWith('/api/live'))return;usingLive=true;
- socket.on('framesent',({payload})=>{const f=JSON.parse(String(payload));if(f.kind==='command')liveSent.set(f.id,{at:performance.now(),command:f.command});});
- socket.on('framereceived',({payload})=>{const f=JSON.parse(String(payload));liveFrames.push(f);if(f.state)liveState=f.state;if(f.kind==='ack'){const sent=liveSent.get(f.id);if(sent)liveLatencies.push({id:f.id,type:sent.command.type,ms:performance.now()-sent.at});}});
+ if(!socket.url().endsWith('/api/live'))return;usingLive=true;const generation=++socketGeneration;
+ socket.on('framesent',({payload})=>{const f=JSON.parse(String(payload));if(f.kind==='command')liveSent.set(`${generation}:${f.id}`,{at:performance.now(),command:f.command});});
+ socket.on('framereceived',({payload})=>{const f=JSON.parse(String(payload));liveFrames.push(f);if(f.state){liveState=f.state;stateGeneration=generation;}if(f.kind==='ack'){const sent=liveSent.get(`${generation}:${f.id}`);if(sent)liveLatencies.push({id:f.id,type:sent.command.type,ms:performance.now()-sent.at});}});
 });
 function nextCommandResponse(){
  if(!usingLive)return page.waitForResponse(r=>r.url().endsWith('/api/command')&&r.request().method()==='POST',{timeout:3000});
@@ -111,9 +111,31 @@ try{
  await save('06-defender-lab');await page.locator('.defender-evidence summary').click();await page.waitForTimeout(recording?2600:100);await save('08-policy-evidence');await page.getByRole('button',{name:'Complete the campaign',exact:true}).click();await save('07-campaign-complete');
  const progress=await page.evaluate(()=>JSON.parse(localStorage.getItem('ghost-protocol-campaign-v1')));assert.equal(Object.keys(progress.results).length,5);assert.equal(progress.defenderComplete,true);
  if(recording){const bytes=await page.evaluate(async()=>{if(!window.gpRecorder)return null;await new Promise(resolve=>{window.gpRecorder.onstop=resolve;window.gpRecorder.stop()});return Array.from(new Uint8Array(await new Blob(window.gpChunks,{type:'audio/webm'}).arrayBuffer()))});if(bytes)await fs.writeFile(`${output}/raw/gameplay-audio.webm`,Buffer.from(bytes));}
- const performanceBeforeReload=await page.evaluate(()=>window.ghostProtocolRenderStats);await page.reload();await page.waitForTimeout(350);const restored=await page.evaluate(()=>JSON.parse(localStorage.getItem('ghost-protocol-campaign-v1')));assert.deepEqual(restored,progress,'Reload changed saved progress or double-counted completion');
+ const performanceBeforeReload=await page.evaluate(()=>window.ghostProtocolRenderStats),reloadChecks=[];
+ if(usingLive){
+  await page.getByRole('button',{name:'Replay the campaign',exact:true}).click();
+  await click('Replay '+getLevel(1).title);await click('Begin mission');
+  const runId=(await read()).runId;
+  for(let attempt=0;attempt<3;attempt++){
+   const generation=socketGeneration,started=performance.now();liveState=null;
+   await page.reload();
+   const deadline=performance.now()+10000;
+   while(!(liveState&&stateGeneration>generation)&&performance.now()<deadline)await page.waitForTimeout(25);
+   assert(liveState&&stateGeneration>generation,'Reload never received a fresh socket state');
+   assert.equal(liveState.runId,runId);assert.equal(liveState.status,'paused');
+   await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent.includes('Resume heist')&&!b.disabled));
+   const readyMs=performance.now()-started;
+   await click('Resume heist');assert.equal((await read()).status,'playing');
+   await press('Escape');assert.equal((await read()).status,'paused');
+   reloadChecks.push({attempt:attempt+1,newSocket:true,preservedRun:true,paused:true,resumeAndPauseAcknowledged:true,readyMs});
+  }
+ }else{await page.reload();await page.waitForTimeout(350);}
+ const restored=await page.evaluate(()=>JSON.parse(localStorage.getItem('ghost-protocol-campaign-v1')));assert.deepEqual(restored,progress,'Reload changed saved progress or double-counted completion');
+ await context.storageState({path:output+'/earned-storage-state.json'});
+ await fs.writeFile(output+'/pre-idle-state.json',JSON.stringify({runId:liveState?.runId,status:liveState?.status,levelId:liveState?.levelId,progress},null,2)+'\n');
+ await save('reload-connected');
  const stats=await page.evaluate(()=>window.ghostProtocolRenderStats);
- const receipt={transport:usingLive?'websocket':'http',liveLatencies,base,browser:await browser.version(),recording,deliberate,interactionResults,liveConsoleChecks,practiceChecks,audioOffsetSeconds,durationSeconds:(Date.now()-epoch)/1000,markers,missions,defender,progress,stats:performanceBeforeReload??stats,errors,inputMethod:'Actual keyboard and UI buttons, guided only by observed public connection snapshots. No actor or progress injection.',inputs,trajectory};
+ const receipt={reloadChecks,transport:usingLive?'websocket':'http',liveLatencies,base,browser:await browser.version(),recording,deliberate,interactionResults,liveConsoleChecks,practiceChecks,audioOffsetSeconds,durationSeconds:(Date.now()-epoch)/1000,markers,missions,defender,progress,stats:performanceBeforeReload??stats,errors,inputMethod:'Actual keyboard and UI buttons, guided only by observed public connection snapshots. No actor or progress injection.',inputs,trajectory};
  await fs.writeFile(`${output}/browser-verification.json`,JSON.stringify(receipt,null,2)+'\n');assert.deepEqual(errors,[]);console.log(JSON.stringify({passed:true,missions:missions.length,defender:true,persistence:true,stats,errors}));
  const video=page.video();await page.close();await context.close();if(video)await video.saveAs(`${output}/full-campaign-gameplay.webm`);
 }catch(error){await save('verification-failure').catch(()=>{});await fs.writeFile(`${output}/verification-failure.json`,JSON.stringify({message:error.message,state:await read().catch(()=>null),errors,missions,inputs,trajectory},null,2));throw error;}finally{await browser.close();}
