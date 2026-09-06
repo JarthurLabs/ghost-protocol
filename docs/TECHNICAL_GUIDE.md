@@ -28,7 +28,7 @@ Pause includes the field guide, reduced motion, separate music and sound-effect 
 
 ## What the server enforces
 
-The browser sends a small allowlisted command. It can request an action or name a grant to revoke, but cannot supply a fabricated identity, position, credential or outcome. The server owns session identity, all actor positions, credential possession, elapsed simulation time, access decisions, capture and extraction. Each command validates its input and applies the engine operation to a private state copy synchronously. The local server then commits that copy in memory. The hosted adapter persists it asynchronously with a compare-and-swap revision check, recomputing only definite conflicts. Unknown commands and extra fields fail closed.
+The browser sends a small allowlisted command. It can request an action or name a grant to revoke, but cannot supply a fabricated identity, position, credential or outcome. The server owns session identity, all actor positions, credential possession, elapsed simulation time, access decisions, capture and extraction. Each command validates its input and applies the engine operation to a private state copy synchronously. Both the local Node server and the deployed Render server commit that copy in memory. Unknown commands and extra fields fail closed.
 
 A grant has a stable name, explicit resource scope, authoritative expiry time and revocation state. When the package is collected, each pursuer receives the compromised Vault grant. Every holder references that same grant. Renewal extends it for prior holders; expiry and revocation remove its authority for subsequent protected requests. The package is a scripted key-leak event for the lesson; reading data does not itself copy credentials in a real system. Patrols move and can capture the player before that event. Every gate crossing is checked. The visible gate state reflects the current grant, and a blocked enemy remains in the world.
 
@@ -37,12 +37,25 @@ Ordinary movement and the maintenance detour use baseline permissions. Vault and
 The implementation is divided by responsibility:
 
 - [Authored levels and resource scopes](../shared/level.ts), with shared contracts in [campaign-schema.ts](../shared/campaign-schema.ts) and [types.ts](../shared/types.ts).
-- [Real-time engine](../server/engine.ts), [authorization evaluator](../server/authorization.ts) and [loopback session server](../server/index.ts).
+- [Real-time engine](../server/engine.ts), [authorization evaluator](../server/authorization.ts), [session server](../server/index.ts) and [Render entrypoint](../server/cloud.ts).
+- [Ordered live connection](../src/liveConnection.ts) and [bounded connection discovery](../src/transportBootstrap.ts).
 - [Three.js facility and actors](../src/Scene.tsx), [game interface](../src/App.tsx), [briefing](../src/Briefing.tsx) and [defender lab](../src/DefenderLab.tsx).
 - [Campaign progress](../src/progress.ts), [learning content](../shared/learning.ts), [state-derived live notes](../src/learningFeedback.ts) and [paused field guide](../src/FieldGuide.tsx).
 - [Isolated practice state](../shared/access-practice.ts) and [practice interface](../src/AccessPractice.tsx), which reuse the pure evaluator without sending live commands.
 
 Read [How Ghost Protocol teaches cybersecurity](../docs/CYBERSECURITY.md) for the teaching model, its limits and primary-source references.
+
+## Local and online connections
+
+The [playable browser release](https://ghost-protocol-b74p.onrender.com) runs on one persistent Node server on Render's free plan in Singapore. The deployed Neon Run source is [ea3382b](https://github.com/JarthurLabs/ghost-protocol/commit/ea3382bed3e7cac6a341bbc2ccb5d54207442f62). [The hosting record](HOSTING.md) identifies its deployment and measured results.
+
+- **Local game:** `npm run dev` or a production build followed by `npm start` uses ordinary Hypertext Transfer Protocol (HTTP) requests for state reads and commands. The approved local mode remains restricted to loopback addresses and this game's reserved ports. An independent server clock drives movement and sentries between requests.
+- **Render game:** `npm run start:cloud` enables WebSocket transport through `server/cloud.ts`. One cookie-owned connection carries ordered commands, acknowledgements and server snapshots. Commands execute synchronously in memory. The same engine and authorization evaluator serve both modes.
+- **Earlier Sites experiment:** the retained [Worker adapter](../hosted/worker.ts) uses HTTP requests and a D1 database, with revision checks to prevent conflicting writes. That adapter belongs to the earlier preview. Its implementation, regression tests and connection investigation are preserved separately in [the hosting history](HOSTING.md#earlier-hosting-evidence); it does not describe the Render runtime.
+
+The live server checks the request origin and session before accepting a socket. A second controller cannot take over an attempt. HTTP mutations are also rejected while a live controller owns it. Command numbers prevent duplicate actions, and the client does not automatically replay an action whose acknowledgement is uncertain.
+
+During a reload, connection discovery waits briefly for the previous socket to release ownership. The replacement receives the current server state and requires explicit Resume if the attempt is paused. An actively heartbeating controller keeps ownership; a competing tab receives a bounded connection error. [Connection repair and verification](REALTIME_REPAIR.md).
 
 ## Saved progress and limits
 
@@ -50,13 +63,17 @@ Non-sensitive campaign results live in this game's browser storage: unlocked mis
 
 Browser progress is a convenience feature, not a security boundary. It cannot authorize a gate or manufacture a win in the current server session. The game has no online leaderboard or account system.
 
-The local Node server keeps active sessions in memory for up to six hours. The hosted adapter stores private sessions in a project-specific database for up to six hours. Reloading can recover an unexpired session. Hiding the page pauses play; a disconnected client also receives a pause after a short grace period. Returning to a paused session requires Resume. Restarting the local Node server clears its active sessions while saved browser campaign progress remains available.
+The local and Render Node servers keep active sessions in memory for up to six hours. Reloading can recover an unexpired session while the process remains alive. Hiding the page requests a pause; a disconnected client also receives a pause after a short grace period. The live connection expires after two seconds without a heartbeat or command. Returning to a paused session requires Resume. Restarting either Node process clears its active attempts while completed campaign progress remains in the same browser and play address.
 
-This is a fictional single-player demonstration. The browser release uses a hosted Worker and database; the local version works with its Node server. The game adds no analytics tracking, external identity accounts, paid interfaces or connection to real security infrastructure. The hosting platform records its own traffic and operational logs. It models authorization decisions, not a complete identity provider or network. First-player campaign duration and learning effectiveness have not been measured. Fast automated reference routes are verification paths, not a claim about playtime or human understanding. Safari has not been verified.
+The free Render service can sleep between visits. The recorded idle-start check took about twenty-five seconds to become usable; an immediate warm reload took about two and a half seconds. These are measured examples, not guaranteed startup times. The server caps live connections at thirty-two and retained sessions at two hundred and fifty-six. Those limits are safeguards, not demonstrated player capacity.
+
+This is a fictional single-player demonstration. The game adds no analytics tracking, external identity accounts, paid interfaces or connection to real security infrastructure. The hosting platform records its own traffic and operational logs. It models authorization decisions, not a complete identity provider or network. First-player campaign duration and learning effectiveness have not been measured. Fast automated reference routes are verification paths, not a claim about playtime or human understanding. Safari has not been verified.
 
 ## Verification and preserved evidence
 
-The current automated suite passes 82 tests, including hosted session isolation, concurrent updates, disconnect timing and ambiguous database failures. It checks server-owned movement and outcomes, forged input rejection, independent actor clocks, pause, exact expiry boundaries, renewal, separate scopes, targeted revocation, baseline access, defender outcomes, HTTP session isolation and local progress parsing. Ten interaction regressions cover matching E labels and targets, expired grants, escape-side console reach, completed lockdown, useful empty-floor feedback and separate renewal effects. The suite also verifies isolated practice transitions and accurate state-derived learning notes, completes all five engine reference routes with every enemy active, and requires real revoked-gate denials.
+The earlier Render release, [fa78de9](https://github.com/JarthurLabs/ghost-protocol/commit/fa78de9eb633e1149347f23ea5d841d93f3f4f8d), passed all 96 tests on September 6, along with the TypeScript check and production build. The suite covers server-owned movement and outcomes, forged input rejection, independent actor clocks, pause, exact expiry boundaries, renewal, separate scopes, targeted revocation, baseline access, defender outcomes, HTTP session isolation and local progress parsing. Interaction regressions cover matching E labels and targets, expired grants, escape-side console reach, completed lockdown, useful empty-floor feedback and separate renewal effects. It also verifies isolated practice, state-derived learning notes, all five engine reference routes and real revoked-gate denials.
+
+Real WebSocket tests check session isolation, origin checks, a protected second controller, command ordering, independent updates, disconnect pause, shutdown, reload discovery, heartbeat expiry and cancelled startup. The suite retains tests of concurrent updates and ambiguous database failures for the earlier Sites adapter. Those database tests are separate from the deployed Render connection. [Recorded release verification](../captures/render-free-review/VERIFICATION.md).
 
 Run the suite, production build and full campaign demonstration:
 
@@ -83,14 +100,22 @@ GHOST_PROTOCOL_URL=http://127.0.0.1:5320 node scripts/newcomer-check.mjs
 GHOST_PROTOCOL_URL=http://127.0.0.1:5320 GHOST_PROTOCOL_LEARNING_PHASE=defender node scripts/learning-check.mjs
 ```
 
-The approved local browser checks completed all five missions with every enemy active, practice exercises, capture and retry, live lockdown with Transit preserved, the defender finale, and saved progress after reload. Ready and locked switches were reviewed across all five levels at desktop and laptop sizes. These tests do not establish that the online deployment has the same responsiveness; [hosting status](HOSTING.md) records that separate issue.
+The approved local browser checks completed all five missions with every enemy active, practice exercises, capture and retry, live lockdown with Transit preserved, the defender finale, and saved progress after reload. Ready and locked switches were reviewed across all five levels at desktop and laptop sizes.
 
-The [release poster](../captures/release/ghost-protocol-poster.png), [Vault frame](../captures/release/ghost-protocol-gate-caption.png) and [Transit frame](../captures/release/ghost-protocol-transit-caption.png) accompany the source snapshot. The eighty-second native 4K review film is delivered separately, with [its verification and captions](../captures/release/VERIFICATION.md) included here. Full historical captures remain preserved in the local game repository.
+That earlier Render build was then checked separately with actual keyboard and button input. All five missions, capture and retry, practices, Vault lockdown, unchanged Transit access and the defender finale passed without browser errors. Three additional reloads received a fresh socket state, preserved the same paused attempt and accepted real Resume and Pause actions. The later idle-start check preserved all earned campaign progress across a server restart. [Public browser receipts and screenshots](../captures/render-free-review/VERIFICATION.md) and [hosting measurements](HOSTING.md) record the scope and limits of those results.
+
+The [release poster](../captures/release/ghost-protocol-poster.png), [Vault frame](../captures/release/ghost-protocol-gate-caption.png) and [Transit frame](../captures/release/ghost-protocol-transit-caption.png) accompany the source snapshot. The [eighty-second release film](https://github.com/user-attachments/assets/9fee1618-74fd-45c8-a706-ba4363241e89) is a 1080p viewing copy of the approved native 4K master, with the same audio stream. [Verification and captions](../captures/release/VERIFICATION.md) document the master and its capture. Full historical captures remain preserved in the local game repository.
 
 ## Original assets and licensing
 
 All facility geometry, materials, drone models, signage, interface illustrations and animation were authored for this project. The ivory workshop, indigo archive, cyan egress and gold data package retain the approved visual direction. Larger missions reuse the same geometric kit, with distinct unit silhouettes and low machinery landmarks. No external artwork, downloaded fonts, paid assets or generated still images are used.
 
-**The Quiet Way In** is an original electronic score composed in code. Synthesized chords, bass, melody, percussion and spatial effects accompany the maze, with additional rhythmic detail during pursuit. Music uses its own audio clock, stops on pause or mute, and resumes from its musical position. No recordings, purchased music or external audio services are used.
+Nicholas selected **Neon Run**, an original procedural synthesizer composition at 124 beats per minute. The game uses a sixteen-bar arrangement rendered once into [an MP3 loop](../public/audio/neon-run.mp3), lasting about 30.97 seconds. The browser decodes that file and loops it on its audio clock; it does not generate the track's instruments during play. Notes and echoes crossing the end wrap into the beginning, with no inserted boundary silence. The composition uses no external samples or purchased recordings.
+
+[The music player](../src/music.ts) keeps the arrangement at its original tempo during pursuit. Pause, mute and hiding the page stop music playback, and resume continues from the saved musical position. Music volume and the separately synthesized movement and action effects retain their own controls. The original runtime score is preserved in project history.
+
+The Neon Run revision passed 103 automated tests, including music loading, looping and control checks, and the full local browser campaign. A focused public check then verified the deployed bundle, music-file hash, playback, keyboard movement, Vault-key collection effect and resumed music with zero browser errors. These results are separate from the historical 96-test release and its full public campaign and startup measurements. The actual hidden-tab audio case remains untested because the automation environment kept both pages visible. [Public music and controls receipt](../captures/neon-run-review/public/public-smoke.json).
+
+The release film uses a continuous Neon Run arrangement at normal tempo over the unchanged video. [Film verification and effect-timing limits](../captures/release/VERIFICATION.md) and [sanitized technical receipt](../captures/release/neon-run-verification.json).
 
 Dependencies retain their own licenses. Source licensing is undecided; this repository does not grant a source license on its owner's behalf.

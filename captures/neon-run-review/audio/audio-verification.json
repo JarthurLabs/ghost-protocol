@@ -1,0 +1,122 @@
+{
+  "browser": "152.0.7977.77",
+  "idle": {
+    "rms": 0.02802047184794961,
+    "peakRms": 0.07659183011668276,
+    "frames": 34
+  },
+  "completeLoop": {
+    "rms": 0.02815763228719023,
+    "peakRms": 0.08586933453519735,
+    "frames": 811
+  },
+  "loopElapsedSeconds": 33.523378707999996,
+  "loopBefore": {
+    "enabled": true,
+    "musicEnabled": true,
+    "effectsEnabled": true,
+    "volume": 0.55,
+    "playing": true,
+    "tension": false,
+    "contextState": "running",
+    "track": "Neon Run",
+    "loadState": "ready",
+    "activeSchedulers": 0,
+    "activeSources": 1,
+    "scheduledSteps": 0,
+    "loopSeconds": 30.96775,
+    "positionSeconds": 2.8426666666666667
+  },
+  "loopAfter": {
+    "enabled": true,
+    "musicEnabled": true,
+    "effectsEnabled": true,
+    "volume": 0.55,
+    "playing": true,
+    "tension": false,
+    "contextState": "running",
+    "track": "Neon Run",
+    "loadState": "ready",
+    "activeSchedulers": 0,
+    "activeSources": 1,
+    "scheduledSteps": 0,
+    "loopSeconds": 30.96775,
+    "positionSeconds": 5.400250000000003
+  },
+  "loopAudit": {
+    "created": 1,
+    "started": 1,
+    "active": [
+      1
+    ],
+    "buffers": [
+      {
+        "duration": 30.96775,
+        "length": 1486452,
+        "sampleRate": 48000,
+        "loop": true,
+        "loopEnd": 30.96775
+      }
+    ]
+  },
+  "paused": {
+    "rms": 0,
+    "peakRms": 0,
+    "frames": 34
+  },
+  "mutedMusic": {
+    "rms": 0,
+    "peakRms": 0,
+    "frames": 34
+  },
+  "musicOnly": {
+    "rms": 0.014903941726433783,
+    "peakRms": 0.03789787387102976,
+    "frames": 35
+  },
+  "masterMuted": {
+    "rms": 0,
+    "peakRms": 0,
+    "frames": 34
+  },
+  "resumed": {
+    "rms": 0.013678578663563503,
+    "peakRms": 0.025459742758014964,
+    "frames": 35
+  },
+  "hiddenTab": {
+    "tested": false,
+    "reason": "Headed automation kept both tabs visible; no actual hidden state was observed",
+    "observedVisibility": "visible"
+  },
+  "afterUnlocks": {
+    "rms": 0.017120658183786854,
+    "peakRms": 0.04545168485023744,
+    "frames": 34
+  },
+  "afterUnlockDiagnostics": {
+    "enabled": true,
+    "musicEnabled": true,
+    "effectsEnabled": false,
+    "volume": 0.3,
+    "playing": true,
+    "tension": false,
+    "contextState": "running",
+    "track": "Neon Run",
+    "loadState": "ready",
+    "activeSchedulers": 0,
+    "activeSources": 1,
+    "scheduledSteps": 0,
+    "loopSeconds": 30.96775,
+    "positionSeconds": 16.584250000000004
+  },
+  "interactionEffect": {
+    "rms": 0.008175070478291796,
+    "peakRms": 0.026521018278238922,
+    "frames": 37
+  },
+  "musicRequestsBeforeReload": 1,
+  "settingsPersisted": true,
+  "turnStayedZeroBeforeEffectCheck": true,
+  "errors": []
+}

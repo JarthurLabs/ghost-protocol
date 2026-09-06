@@ -1,60 +1,95 @@
+https://github.com/user-attachments/assets/9fee1618-74fd-45c8-a706-ba4363241e89
+
 # Ghost Protocol
 
-A tiny maintenance drone, a maze full of trouble, and a key that works for the wrong person too.
+I wanted to make a cybersecurity game that someone could enjoy before they knew the terminology.
 
-Ghost Protocol is a five-mission browser game inspired by classic maze chases. Collect access keys, recover the package, avoid the sentries, and lock the Vault behind you. Later missions add larger mazes, more pursuers, expiring access, and a separate Transit key for the exit.
+Ghost Protocol is what came out of that: a small, Pac-Man-inspired maze chase about access keys, copied credentials, and knowing when to shut access down. You guide a maintenance drone through five facilities, recover a package, and get out while the sentries keep moving.
 
-The cybersecurity connection is part of the game. A copied credential can open the same gate. Revoking Vault access stops every holder from using it. Separate Transit access can keep working. The defender finale asks you to check both sides of a policy change: did the forbidden request fail, and can the legitimate worker still do the job?
+I'm Nicholas. I built this with Codex, directing the gameplay, visuals, and learning experience through repeated playthroughs and reviews. Codex handled implementation, automated checks, and gameplay captures. The project grew through that back-and-forth.
 
-I’m Nicholas. I built this with Codex, directing the gameplay, visual style, and learning experience through repeated reviews. Codex handled implementation and verification as we worked through each revision.
+## Play it
 
-[How we built it](docs/HOW_IT_WAS_BUILT.md) · [What the security concepts mean](docs/CYBERSECURITY.md) · [Controls and technical detail](docs/TECHNICAL_GUIDE.md)
+**[Play Ghost Protocol in your browser](https://ghost-protocol-b74p.onrender.com)**
 
-## Play
+Use a desktop browser and keyboard. WASD or the arrow keys steer, Space brakes, E uses the nearby device, and Escape pauses. R or the visible **Restart level** button gives you a fresh attempt. M changes the camera.
 
-The approved local game is preserved locally as `approved-game-2026-09-05`. This repository contains the release source snapshot and creation story; the full iteration history remains preserved in the original local repository. The captioned 4K review film is delivered separately; [its verification and captions are included here](captures/release/VERIFICATION.md).
+The game runs on free hosting. In the recorded idle-start test, it took about twenty-five seconds to become ready. The immediate warm reload took about two and a half seconds. These are measured examples; future waits can differ. [Hosting results and limits](docs/HOSTING.md).
 
-[Try the free browser build](https://ghost-protocol-b74p.onrender.com). The five-mission playthrough and reload checks pass on Render. After more than eighteen minutes idle, the tested first visit took about twenty-five seconds to become playable. An immediate warm reload took about two and a half seconds. Free hosting can sleep between visits; these are measured examples, not guaranteed load times. [Measured hosting results and limits](docs/HOSTING.md). The older Sites address remains the original preview during this trial.
+![Mission Five's larger maze with three pursuing sentries](captures/render-free-review/mission-five-pursuit.png)
 
-Use a keyboard and a desktop browser. Arrow keys or WASD steer; the drone keeps moving until it meets a wall. Space brakes. Escape pauses. R or **Restart level** offers a fresh attempt. M changes the camera.
+*Mission Five combines the larger maze, two access scopes, and three pursuers. This is a capture from the running browser game.*
 
-Keys collect when you cross them. Gates choose the matching key automatically. V means Vault; T means Transit. Clock readers renew the named key. After crossing the Vault exit, use the switch on the cyan side of the doorway to **Lock Vault behind you**. E and the visible action button do the same thing. Keep your Transit key active for extraction in the later missions.
+## Why the keys matter
 
-New to the concepts? The introduction, optional practice exercises and paused field guide explain them. Learning notes stay brief during the chase. Nobody wants a policy lecture while a robot is chasing them.
+The basic loop is straightforward: collect access, reach the package, cross the Vault gate, and lock it behind you.
 
-![Ghost Protocol release poster](captures/release/ghost-protocol-poster.png)
+Collecting the package triggers a simulated credential leak. The pursuers can then use a copy of the same Vault access. The gate checks the permission they present, so an open route can help them too.
+
+Lockdown revokes that shared Vault permission for every holder, including you. Later missions introduce a separate Transit key for the exit. You can contain the compromised access while keeping the permission you still need.
+
+![Mission Four with separate Vault and Transit keys and the Vault lockdown switch](captures/render-free-review/mission-four-vault-and-transit.png)
+
+*Vault opens the archive. Transit opens the exit. The switch revokes Vault access and leaves Transit unchanged.*
+
+Larger mazes, dead ends, expiring access, and renewal devices build on those rules. An optional introduction and practice exercises explain the concepts before the chase. Short notes and mission debriefs connect what happened to ordinary access-control tasks.
+
+## How it took shape
+
+The early version established the heist and access rules. After playing it, I wanted more colour, music, and a stronger maze-chase feel. I asked for independently moving enemies, continuous steering, and paths where a wrong turn could matter.
+
+Once that felt right, the interface needed attention. Floor devices were unclear. Arriving at a gate with multiple keys opened a selection dialog and interrupted the chase. Some E prompts appeared where nothing useful happened. The Vault switch and sign overlapped.
+
+We worked through those individually. Gates now select the matching key automatically. Devices explain their purpose. Prompts name the action the server will accept. The lockdown switch sits consistently on the cyan side of the Vault exit in every mission.
+
+Apparently “just lock the door” needs a surprisingly clear button.
+
+![Mission One's Vault sign, separate lockdown switch, and named interaction prompt](captures/render-free-review/mission-one-lock.png)
+
+*The reviewed doorway layout keeps the Vault sign visible and puts the switch beside the exit.*
+
+The first public host also exposed a problem the local game did not have: steering lag. We moved the online connection to a persistent Node server using WebSockets and checked the campaign again. Public testing then caught a reload conflict between the old and new connection. That was reproduced and fixed while preserving one controller per attempt.
+
+[Read the build story](docs/HOW_IT_WAS_BUILT.md)
+
+## The cybersecurity connection
+
+My experience with software-as-a-service implementation, documentation, onboarding, and troubleshooting helps me connect access problems to the user workflows a security change needs to preserve.
+
+This project gave me a practical way to work through several related skills:
+
+- **Access control:** distinguish a credential from the resources its permissions allow.
+- **Credential lifecycle:** explain scheduled expiry, renewal, and deliberate revocation.
+- **Least privilege and containment:** remove access to one resource while preserving legitimate work elsewhere.
+- **Validation:** check the request that should fail and the request that should still succeed.
+- **Technical communication:** turn confusing behavior into clear requirements, onboarding, useful feedback, and a reproducible check.
+
+The defender finale brings those ideas together. You compare broad access, disabling a shared credential, and narrowing its permissions. Completion requires an intruder's Vault request to fail while legitimate maintenance still works.
+
+That paired check is the lesson I wanted people to take away: a security change needs an expected outcome for legitimate users too.
+
+[Explore the security concepts](docs/CYBERSECURITY.md)
+
+## Underneath the game
+
+React and TypeScript handle the interface. Three.js renders the facility. The geometry, characters, interface, and synthesized soundtrack were made for this project.
+
+The server owns positions, timers, permissions, and outcomes. The browser sends actions; it cannot choose an actor's identity or declare a win. Protected gate crossings go through the authorization evaluator.
+
+The Neon Run revision passed 103 tests and the full local campaign, plus a public music and controls check. Earlier public verification covered all five missions, capture and retry, Vault lockdown, Transit preservation, the defender finale, and reload recovery. That earlier release passed 96 tests.
+
+[Browser evidence](captures/render-free-review/VERIFICATION.md) · [Controls and technical guide](docs/TECHNICAL_GUIDE.md)
 
 ## Run it locally
 
-Use Node.js 24 and npm. These commands install the locked dependencies and start the game:
+With Node.js 24 installed, install the dependencies and start the game:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open [the local game](http://127.0.0.1:5320). The browser uses port 5320 and the development backend uses 5321. Both bind to loopback. An occupied port produces an error without stopping another process.
-
-For a production build, run:
-
-```sh
-npm run build
-npm start
-```
-
-The production server also defaults to port 5320. `GHOST_PROTOCOL_PORT` can select another free port from 5320 through 5329. On a Mac with a Codex-provided Node runtime outside the shell path, `./scripts/with-runtime.sh` runs the same npm commands.
-
-## What is real, and what is a model?
-
-The server owns actor positions, credentials, timers, permission decisions and outcomes. The browser requests actions; it cannot send a fabricated identity or declare a win. Every protected gate crossing goes through the authorization evaluator. The copied Vault key references the same grant, so revocation affects every holder.
-
-The fictional package pickup represents a key-leak incident. Reading a file does not automatically copy credentials in real systems. Narrowing access in the defender finale proves the two displayed requests; a real incident also calls for replacing the exposed credential. This is a teaching game, not a complete identity platform or security assessment.
-
-Campaign progress and preferences stay in browser storage for that play address. Saved progress does not automatically transfer from the old Sites address to Render. The game adds no player accounts, analytics tracking or online leaderboards. The hosting platform records its own traffic and operational logs. Online play uses one Node server on Render, with commands and updates carried over an authenticated WebSocket. Active attempts are held in memory and reset if the process restarts; completed progress stays in the same browser. The approved local HTTP mode and online mode use the same authoritative engine. [Connection repair and deployment details](docs/REALTIME_REPAIR.md). A static host alone cannot enforce server authority.
-
-## Verify it
-
-The test suite checks the campaign, authorization rules, session boundaries and hosted concurrency. The demo completes all five missions and the defender’s paired requests:
+Open [the local game](http://127.0.0.1:5320). To check the project:
 
 ```sh
 npm test
@@ -62,10 +97,10 @@ npm run build
 npm run demo
 ```
 
-The GitHub workflow runs these checks on Node.js 24. Real browser checks also cover mission completion, loss and retry, pause, reload, learning exercises, and Vault lockdown with Transit preserved. See the [technical guide](docs/TECHNICAL_GUIDE.md) for commands and evidence. Automated routes demonstrate behavior; they do not measure a newcomer’s playtime or learning.
+## Scope and limits
 
-## Art, music and rights
+This is a teaching model. Reading a file does not normally copy a credential, and narrowing permissions does not erase a stolen copy. A real response may also require revoking and replacing exposed credentials.
 
-The geometry, characters, signs, interface and animations were made for this game. **The Quiet Way In** is an original electronic score composed in code, with synthesized music and effects. There are no downloaded art packs, stock songs or paid generation services.
+Automated checks establish game behavior; they do not prove learning outcomes or production security experience. Completed progress stays in the same browser and play address. An active attempt resets if the host restarts.
 
-Dependencies retain their own licenses. Source licensing is undecided; this repository does not grant a source license on its owner’s behalf.
+Source licensing remains undecided. Dependencies retain their own licenses.

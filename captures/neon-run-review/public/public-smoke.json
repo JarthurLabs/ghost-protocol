@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-09-06T06:33:16.125Z",
+  "base": "https://ghost-protocol-b74p.onrender.com",
+  "browser": "152.0.7977.77",
+  "initialHttpStatus": 200,
+  "expectedBundle": "index-Bhq9BpDG.js",
+  "expectedBundleMatched": true,
+  "bundles": [
+    {
+      "url": "https://ghost-protocol-b74p.onrender.com/assets/index-Bhq9BpDG.js",
+      "httpStatus": 200
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://ghost-protocol-b74p.onrender.com/audio/neon-run.mp3",
+      "httpStatus": 200,
+      "contentType": "audio/mpeg",
+      "bytes": 620745,
+      "sha256": "5a68cb17aa2d52f7acfcd5abe051df23197cad075a8af48ee03fd8cd81de0553"
+    }
+  ],
+  "music": {
+    "rms": 0.03200550391608432,
+    "peakRms": 0.0818290867457184,
+    "samples": 44
+  },
+  "playing": {
+    "enabled": true,
+    "musicEnabled": true,
+    "effectsEnabled": true,
+    "volume": 0.55,
+    "playing": true,
+    "tension": false,
+    "contextState": "running",
+    "track": "Neon Run",
+    "loadState": "ready",
+    "activeSchedulers": 0,
+    "activeSources": 1,
+    "scheduledSteps": 0,
+    "loopSeconds": 30.96775,
+    "positionSeconds": 2.4160000000000004
+  },
+  "keyboard": {
+    "start": {
+      "x": 1,
+      "z": 11
+    },
+    "reached": {
+      "x": 2,
+      "z": 11
+    },
+    "moves": 1
+  },
+  "keyCollection": {
+    "event": "borrowed",
+    "grants": [
+      "vault"
+    ],
+    "keyEffect": {
+      "rms": 0.008581137356647077,
+      "peakRms": 0.02680205569106717,
+      "samples": 45
+    }
+  },
+  "resumedNeonRun": {
+    "enabled": true,
+    "musicEnabled": true,
+    "effectsEnabled": true,
+    "volume": 0.55,
+    "playing": true,
+    "tension": false,
+    "contextState": "running",
+    "track": "Neon Run",
+    "loadState": "ready",
+    "activeSchedulers": 0,
+    "activeSources": 1,
+    "scheduledSteps": 0,
+    "loopSeconds": 30.96775,
+    "positionSeconds": 3.2906666666666666
+  },
+  "errors": []
+}

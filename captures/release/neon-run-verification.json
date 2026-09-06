@@ -1,0 +1,104 @@
+{
+  "scope": "Neon Run game revision, public deployment verification and revised film technical verification",
+  "film": {
+    "file": "ghost-protocol-linkedin-neon-run-4k.mp4",
+    "bytes": 44152316,
+    "sha256": "512ac57937d71009e361ee9263730d101861e7923abdf0b0091a1d26b5295b25",
+    "durationSeconds": 80.2,
+    "width": 3840,
+    "height": 2160,
+    "frames": 2005,
+    "fps": 25,
+    "videoCodec": "Original H.264 video stream copied unchanged",
+    "color": "Original Rec.709 metadata preserved by stream copy",
+    "videoStreamIdenticalToOriginal": true,
+    "videoStreamSha256": "b2f3307b18706fbadece61aa8210761c6d5becfd938c316ac861da8f3443db16",
+    "audioCodec": "AAC",
+    "audioSampleRate": 48000,
+    "audioChannels": 2,
+    "integratedLufs": -17.06,
+    "truePeakDbtp": -1.5,
+    "loudnessRangeLu": 2.6,
+    "fullAudioVideoDecodePassed": true,
+    "faststartVerified": true,
+    "gameplayPlaybackRate": 0.85,
+    "music": {
+      "title": "Neon Run",
+      "bpm": 124,
+      "playbackRate": 1,
+      "importantEffectDuckingDb": -4
+    },
+    "effects": {
+      "sha256": "9f6fd6cde5ce96cd89011b4641f981dcef56afd5651f1541af61f25e66198c38",
+      "provenance": "Original sound recipes reconstructed from recorded action and state observations.",
+      "timingLimit": "Original sound recipes reconstructed from recorded events; onsets inferred from observations, not bit-identical extracted SFX. Actual defender audio retained."
+    },
+    "subjectiveListeningPerformedByAgent": false
+  },
+  "preservedOriginal": {
+    "file": "ghost-protocol-linkedin-4k.mp4",
+    "sha256": "7c2ae37dcec028242e19c784271e74e5b822bc208170e6e100633bf9b0c02989",
+    "unchangedBeforeAndAfterRemix": true,
+    "receipt": "video-qa-receipt.json"
+  },
+  "gameMusicAsset": {
+    "pathFromRepositoryRoot": "public/audio/neon-run.mp3",
+    "title": "Neon Run",
+    "bpm": 124,
+    "bars": 16,
+    "beatsPerBar": 4,
+    "durationSeconds": 30.96775,
+    "sampleRate": 48000,
+    "decodedFrames": 1486452,
+    "bytes": 620745,
+    "sha256": "5a68cb17aa2d52f7acfcd5abe051df23197cad075a8af48ee03fd8cd81de0553",
+    "externalSamples": false,
+    "renderedBeforePlayback": true,
+    "loopMethod": "Original sixteen-bar arrangement; every note and echo crossing the end is added at the start. No loop-boundary fade or silence.",
+    "noBoundarySilenceInserted": true
+  },
+  "localTests": {
+    "passed": 103,
+    "failed": 0,
+    "scope": "Later local Neon Run revision; does not replace the historical 96-test Render release record."
+  },
+  "approvalStatus": {
+    "musicSelectedByNicholas": true,
+    "revisedFilmReview": "approved by Nicholas on September 6, 2026",
+    "nativeLinkedInScheduling": "approved copy and film; native scheduler receipt pending",
+    "liveRenderNeonRunDeployment": "live and public browser smoke passed",
+    "githubPublication": "authorized; presentation upload in progress"
+  },
+  "printedPlayLink": {
+    "url": "https://ghost-protocol.jamalarthur1.chatgpt.site",
+    "redirectStatus": 302,
+    "target": "https://ghost-protocol-b74p.onrender.com/",
+    "evidence": "Coordinating release agent verified Sites version 5 redirect; no request made by this documentation task."
+  },
+  "provenance": "Selected metrics copied from the local film, loop and decoded-loop QA receipts; file hashes checked during sanitization. No absolute personal paths or session data included.",
+  "publicGame": {
+    "url": "https://ghost-protocol-b74p.onrender.com/",
+    "commit": "ea3382bed3e7cac6a341bbc2ccb5d54207442f62",
+    "deployment": "dep-daegh9ad0e5s738dpqq0",
+    "finishedAt": "2026-09-06T06:31:51.113849Z",
+    "status": "live",
+    "productionBundle": "index-Bhq9BpDG.js",
+    "actualKeyboardAndKeyCollectionPassed": true,
+    "originalKeyEffectMeasured": true,
+    "musicPlaybackAndResumePassed": true,
+    "errors": [],
+    "receipt": "../neon-run-review/public/public-smoke.json",
+    "screenshot": "../neon-run-review/public/neon-run-public-game.png"
+  },
+  "localAudio": {
+    "completeLoopSeconds": 33.523378707999996,
+    "oneDownloadAndSource": true,
+    "pauseAndMutesMeasuredSilent": true,
+    "settingsPersisted": true,
+    "originalInteractionEffectMeasured": true,
+    "errors": [],
+    "actualHiddenTabTested": false,
+    "hiddenTabLimit": "Automation kept both tabs visible.",
+    "receipt": "../neon-run-review/audio/audio-verification.json"
+  }
+}
