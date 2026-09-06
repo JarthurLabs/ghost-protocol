@@ -1,4 +1,4 @@
-https://github.com/user-attachments/assets/9fee1618-74fd-45c8-a706-ba4363241e89
+https://github.com/user-attachments/assets/31fb4bea-a96b-438a-9b4d-22c0eba4184e
 
 # Ghost Protocol
 
