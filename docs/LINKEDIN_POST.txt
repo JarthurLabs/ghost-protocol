@@ -2,6 +2,8 @@ I built a little cybersecurity game because access control is easier to understa
 
 Meet Ghost Protocol.
 
+Play Ghost Protocol: https://ghost-protocol-b74p.onrender.com/
+
 It’s a browser maze game where you collect access keys, recover a package, and avoid patrolling sentries. The twist? The sentries get a copy of your Vault access. Getting out means knowing which permission to revoke—and which one you still need.
 
 I built this with Codex. I directed the gameplay, visuals, and learning experience, while Codex handled implementation and testing.
@@ -15,8 +17,6 @@ The project connects with the work I enjoy: troubleshooting, documenting decisio
 That’s also the security lesson. Removing compromised access matters. So does making sure legitimate work can continue.
 
 The video gives you a look at the game. The GitHub write-up covers how we built it, including the hosting problems we had to work through.
-
-Play Ghost Protocol: https://ghost-protocol-b74p.onrender.com/
 
 Explore the project: https://github.com/JarthurLabs/ghost-protocol
 

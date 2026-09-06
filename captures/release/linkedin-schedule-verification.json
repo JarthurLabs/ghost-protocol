@@ -18,7 +18,7 @@
   "scheduledCountBefore": 0,
   "scheduledCountAfter": 1,
   "approvedTextFile": "../../docs/LINKEDIN_POST.txt",
-  "approvedTextSha256": "6b2c43978ffa3fcbb020d4e6ceaf17cf3af162110e2fefbbc9d6ebbf71654d02",
+  "approvedTextSha256": "8127cb8bb9fabb824fa3806df68545801d822349315571fb3a71a37b8f9f2000",
   "approvedTextExactMatchBeforeSubmission": true,
   "uploadedVideo": {
     "file": "ghost-protocol-linkedin-neon-run-4k.mp4",
@@ -44,5 +44,26 @@
     "game": "https://ghost-protocol-b74p.onrender.com/",
     "repository": "https://github.com/JarthurLabs/ghost-protocol"
   },
-  "evidenceMethod": "Official browser composer, exact text comparison, successful native Schedule action, Post scheduled confirmation, Scheduled (1) entry readback, and saved edit view video inspection. No edits saved after readback."
+  "evidenceMethod": "Official browser composer, exact text comparison, successful native Schedule action, Post scheduled confirmation, Scheduled (1) entry readback, and saved edit view video inspection. No edits saved after readback.",
+  "initiallyApprovedTextSha256": "6b2c43978ffa3fcbb020d4e6ceaf17cf3af162110e2fefbbc9d6ebbf71654d02",
+  "captionUpdate": {
+    "verifiedAt": "2026-09-06T12:59:26.039503+00:00",
+    "requestedBy": "Nicholas",
+    "change": "Moved the existing Play Ghost Protocol link directly below Meet Ghost Protocol. No other caption text changed.",
+    "confirmation": "Post schedule updated.",
+    "savedCaptionExactMatch": true,
+    "savedPlayLink": "https://lnkd.in/gcgWciJ2",
+    "directGameDestination": "https://ghost-protocol-b74p.onrender.com/",
+    "githubLinkRemainsSeparate": true,
+    "scheduleUnchanged": true,
+    "deviceDisplay": "Posting at Tue, Sep 8, 9:00 PM",
+    "videoRetained": true,
+    "durationSeconds": 80.2,
+    "previewDimensions": [
+      1280,
+      720
+    ],
+    "previewReadyState": 4,
+    "scheduledEntriesObserved": 1
+  }
 }
