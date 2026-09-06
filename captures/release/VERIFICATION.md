@@ -1,6 +1,6 @@
 # Ghost Protocol film verification
 
-Nicholas approved the finished **Neon Run** film. The native 4K master, `ghost-protocol-linkedin-neon-run-4k.mp4`, is preserved in the local production archive. The [GitHub player](https://github.com/user-attachments/assets/31fb4bea-a96b-438a-9b4d-22c0eba4184e) uses a 1080p viewing copy with the same approved AAC audio stream.
+Nicholas approved the finished **Neon Run** film. The native 4K master, `ghost-protocol-linkedin-neon-run-4k.mp4`, is preserved in the local production archive. The [GitHub player](https://github.com/JarthurLabs/ghost-protocol#readme-ov-file) uses a 1080p viewing copy with the same approved AAC audio stream.
 
 ## Revised film: Neon Run
 

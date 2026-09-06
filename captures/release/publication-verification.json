@@ -1,0 +1,97 @@
+{
+  "checkedAt": "2026-09-06T07:25:39.339Z",
+  "method": "Unauthenticated HTTP requests; no cookies, authorization header or browser session. Remote video checked with HEAD only. Because the attachment HEAD returned 404, one anonymous Range GET requested bytes 0-0; the response body was cancelled and no media saved. Public repository HTML was then fetched without authentication and held only in memory. Rendered video source URLs were checked internally with HEAD; signed URLs and HTML were not saved or printed.",
+  "repositoryCommit": "44ab843bc88454c548fdf0b6670d84abcbdb1de1",
+  "verified": true,
+  "checks": [
+    {
+      "label": "repository",
+      "status": 200,
+      "mime": "text/html; charset=utf-8",
+      "finalHost": "github.com"
+    },
+    {
+      "label": "readme",
+      "status": 200,
+      "mime": "text/plain; charset=utf-8",
+      "finalHost": "raw.githubusercontent.com",
+      "videoFirst": true
+    },
+    {
+      "label": "mission-five-pursuit.png",
+      "status": 200,
+      "mime": "image/png",
+      "finalHost": "raw.githubusercontent.com"
+    },
+    {
+      "label": "mission-four-vault-and-transit.png",
+      "status": 200,
+      "mime": "image/png",
+      "finalHost": "raw.githubusercontent.com"
+    },
+    {
+      "label": "mission-one-lock.png",
+      "status": 200,
+      "mime": "image/png",
+      "finalHost": "raw.githubusercontent.com"
+    },
+    {
+      "label": "video-attachment",
+      "status": 404,
+      "mime": "text/plain; charset=utf-8",
+      "finalHost": "github.com"
+    },
+    {
+      "label": "printed-play-address",
+      "status": 302,
+      "mime": null,
+      "finalHost": "ghost-protocol.jamalarthur1.chatgpt.site",
+      "redirectTargetHost": "ghost-protocol-b74p.onrender.com",
+      "redirectMatchesApprovedGame": true
+    },
+    {
+      "label": "playable-host",
+      "status": 200,
+      "mime": "text/html; charset=utf-8",
+      "finalHost": "ghost-protocol-b74p.onrender.com"
+    },
+    {
+      "label": "video-attachment-range-get",
+      "status": 404,
+      "mime": "text/plain; charset=utf-8",
+      "finalHost": "github.com",
+      "contentLength": "9",
+      "requestedRange": "bytes=0-0",
+      "bodySaved": false
+    }
+  ],
+  "anonymousRenderedVideo": {
+    "repoStatus": 200,
+    "repoHost": "github.com",
+    "videoElements": 1,
+    "streams": [
+      {
+        "status": 200,
+        "mime": "video/mp4",
+        "finalHost": "private-user-images.githubusercontent.com",
+        "sourceFound": true,
+        "width": null,
+        "height": null,
+        "durationAttribute": null
+      }
+    ]
+  },
+  "renderedVideoVerified": true,
+  "directAttachmentPermalinkLimitation": "Standalone attachment permalink requests returned 404 without authentication. The anonymous repository README renders an authorized video stream that responds 200 video/mp4. Link readers to the repository README player instead of the bare attachment permalink.",
+  "rootBrowserVerification": {
+    "source": "Reported by coordinating agent after its direct signed-out in-app-browser inspection",
+    "signedOutEvidence": "Sign in link present",
+    "durationSeconds": 80.2,
+    "width": 1920,
+    "height": 1080,
+    "readyState": 4,
+    "error": null,
+    "playbackAdvancedToSeconds": 6.278954,
+    "pausedAfterPlayback": true
+  }
+}

@@ -65,9 +65,9 @@
   "approvalStatus": {
     "musicSelectedByNicholas": true,
     "revisedFilmReview": "approved by Nicholas on September 6, 2026",
-    "nativeLinkedInScheduling": "approved copy and film; native scheduler receipt pending",
+    "nativeLinkedInScheduling": "scheduled and read back: September 8, 2026 at 10:00 America/New_York; approved copy and original 4K Neon Run film",
     "liveRenderNeonRunDeployment": "live and public browser smoke passed",
-    "githubPublication": "authorized; presentation upload in progress"
+    "githubPublication": "public; signed-out README video playback and three screenshots verified"
   },
   "printedPlayLink": {
     "url": "https://ghost-protocol.jamalarthur1.chatgpt.site",
@@ -100,5 +100,9 @@
     "actualHiddenTabTested": false,
     "hiddenTabLimit": "Automation kept both tabs visible.",
     "receipt": "../neon-run-review/audio/audio-verification.json"
+  },
+  "releaseReceipts": {
+    "publication": "publication-verification.json",
+    "linkedinSchedule": "linkedin-schedule-verification.json"
   }
 }

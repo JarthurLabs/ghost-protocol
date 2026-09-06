@@ -1,8 +1,10 @@
 # LinkedIn post
 
-**Status:** Nicholas approved this exact copy and the finished Neon Run film. Scheduling receipt pending.
+**Status:** Nicholas approved this exact copy and the finished Neon Run film. LinkedIn confirmed the post is scheduled, and its saved video attachment was verified.
 
-**Target publication:** Tuesday, September 8, 2026, at 10:00 a.m. New York time (`America/New_York`).
+**Scheduled publication:** Tuesday, September 8, 2026, at 10:00 a.m. New York time (`America/New_York`).
+
+The native 4K original was uploaded. LinkedIn supplies its own processed playback versions. [Scheduling receipt](../captures/release/linkedin-schedule-verification.json).
 
 ---
 

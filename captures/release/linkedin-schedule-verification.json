@@ -1,0 +1,48 @@
+{
+  "verifiedAt": "2026-09-06T07:28:00Z",
+  "platform": "LinkedIn native scheduler",
+  "status": "scheduled",
+  "published": false,
+  "account": "Jamal Nicholas Arthur",
+  "profile": "https://www.linkedin.com/in/jamalnicholasarthur/",
+  "audience": "Anyone",
+  "target": {
+    "date": "2026-09-08",
+    "time": "10:00",
+    "timezone": "America/New_York",
+    "utc": "2026-09-08T14:00:00Z",
+    "deviceTimezone": "Asia/Bangkok",
+    "deviceDisplay": "Posting Tue, Sep 8, 2026 at 9:00 PM"
+  },
+  "confirmation": "Post scheduled.",
+  "scheduledCountBefore": 0,
+  "scheduledCountAfter": 1,
+  "approvedTextFile": "../../docs/LINKEDIN_POST.txt",
+  "approvedTextSha256": "6b2c43978ffa3fcbb020d4e6ceaf17cf3af162110e2fefbbc9d6ebbf71654d02",
+  "approvedTextExactMatchBeforeSubmission": true,
+  "uploadedVideo": {
+    "file": "ghost-protocol-linkedin-neon-run-4k.mp4",
+    "sha256": "512ac57937d71009e361ee9263730d101861e7923abdf0b0091a1d26b5295b25",
+    "bytes": 44152316,
+    "width": 3840,
+    "height": 2160,
+    "durationSeconds": 80.2,
+    "soundtrack": "Neon Run",
+    "captions": "Approved animated captions",
+    "narration": false
+  },
+  "savedPostReadback": {
+    "dateMatched": true,
+    "videoPlayerPresent": true,
+    "durationSeconds": 80.2,
+    "previewWidth": 1280,
+    "previewHeight": 720,
+    "previewReadyState": 4,
+    "note": "LinkedIn provided a 720p processed preview after the native 4K original was uploaded. No claim is made that every viewer will receive 4K playback."
+  },
+  "links": {
+    "game": "https://ghost-protocol-b74p.onrender.com/",
+    "repository": "https://github.com/JarthurLabs/ghost-protocol"
+  },
+  "evidenceMethod": "Official browser composer, exact text comparison, successful native Schedule action, Post scheduled confirmation, Scheduled (1) entry readback, and saved edit view video inspection. No edits saved after readback."
+}
