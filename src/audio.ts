@@ -1,8 +1,9 @@
 import { HeistMusic } from './music';
+import { NEON_RUN } from './musicTrack';
 
 export type Cue = 'start' | 'move' | 'grant' | 'pickup' | 'revoke' | 'deny' | 'win' | 'lose' | 'tap';
 
-/** Original procedural audio. No recordings, samples, or external services. */
+/** Original synthesized effects and the original rendered Neon Run score. */
 class GhostAudio {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
@@ -81,7 +82,8 @@ class GhostAudio {
   getDiagnostics() {
     return { enabled: this.enabled, musicEnabled: this.musicEnabled, effectsEnabled: this.effectsEnabled,
       volume: this.musicVolume, playing: this.playing, tension: this.tension, contextState: this.context?.state ?? 'locked',
-      ...(this.music?.getDiagnostics() ?? { activeSchedulers: 0, activeSources: 0, scheduledSteps: 0, loopSeconds: 16 * 4 * 60 / 92, positionSeconds: 0 }) };
+      ...(this.music?.getDiagnostics() ?? { track: NEON_RUN.title, loadState: 'locked', activeSchedulers: 0,
+        activeSources: 0, scheduledSteps: 0, loopSeconds: NEON_RUN.loopSeconds, positionSeconds: 0 }) };
   }
 
   private syncMusic() {
