@@ -99,3 +99,8 @@
  .touch-layout .objective-card h1{font-size:15px;margin:0 0 3px}
  .touch-layout .status-stack{top:calc(115px + env(safe-area-inset-top))}
 }
+
+.touch-layout .key-button[data-touch-pressed=true]{transform:translateY(2px);background:#568d80;border-color:#c3ffe6;box-shadow:0 0 0 3px #8eeed438}
+.touch-layout .haptics-setting{width:100%;min-height:44px;margin-top:10px}
+.touch-layout .haptics-setting small{display:block;font-size:10px;line-height:1.4;color:#9fb8b6;margin-top:4px}
+.touch-layout .haptics-setting:disabled{opacity:.55}

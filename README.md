@@ -14,7 +14,7 @@ I'm Nicholas. I built this with Codex, directing the gameplay, visuals, and lear
 
 On a computer, WASD or the arrow keys steer, Space brakes, E uses the nearby device, and Escape pauses. R or the visible **Restart level** button gives you a fresh attempt. M changes the camera.
 
-On a phone or touch tablet, the layout changes automatically. Tap the larger arrows to steer, Brake to stop, and the named action button to use a nearby device. The map icon switches between following your drone and the whole maze. Pickup messages fade after a few seconds, with the objective kept above the play area.
+On a phone or touch tablet, the layout changes automatically. Touch the larger arrows or slide between them to steer, Brake to stop, and the named action button to use a nearby device. Directions respond when your finger lands. Light vibration is available in supporting browsers and can be switched off in Pause. The map icon switches between following your drone and the whole maze. Pickup messages fade after a few seconds, with the objective kept above the play area.
 
 The game runs on free hosting. In the recorded idle-start test, it took about twenty-five seconds to become ready. The immediate warm reload took about two and a half seconds. These are measured examples; future waits can differ. [Hosting results and limits](docs/HOSTING.md).
 

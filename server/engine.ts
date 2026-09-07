@@ -425,7 +425,15 @@ function execute(game: EngineState, command: Command) {
   if (command.type === 'pause' && game.status === 'playing') { game.status = 'paused'; return; }
   if (command.type === 'revoke' && ['playing', 'paused'].includes(game.status)) { revoke(game, command.grantId); return; }
   if (game.status !== 'playing') return;
-  if (command.type === 'move') game.queuedDirection = command.direction;
+  if (command.type === 'move') {
+    const offset = directions[command.direction];
+    const target = { x: game.player.x + offset.x, z: game.player.z + offset.z };
+    // Accept an open heading now, so an early corner cannot erase the start.
+    // Movement remains clocked, with authorization checked in playerStep.
+    if (canStep(game, game.player, target)) {
+      game.direction = command.direction; game.queuedDirection = null;
+    } else game.queuedDirection = command.direction;
+  }
   else if (command.type === 'wait') { game.direction = null; game.queuedDirection = null; }
   else if (command.type === 'interact') {
     const object = nearby(game);

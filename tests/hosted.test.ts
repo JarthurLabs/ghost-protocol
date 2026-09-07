@@ -44,7 +44,7 @@ test('hosted clock uses real elapsed time and pauses through a bounded disconnec
 test('concurrent requests use compare-and-swap without double advancing the clock',async()=>{
  const f=fixture(),cookie=await session(f);await f.request('/api/command',{type:'start'},cookie);f.advance(180);
  const responses=await Promise.all([f.request('/api/state',undefined,cookie),f.request('/api/command',{type:'move',direction:'east'},cookie)]);
- assert(responses.every(r=>r.status===200));let state=await(await f.request('/api/state',undefined,cookie)).json() as any;assert.equal(state.elapsedMs,180);assert.equal(state.queuedDirection,'east');
+ assert(responses.every(r=>r.status===200));let state=await(await f.request('/api/state',undefined,cookie)).json() as any;assert.equal(state.elapsedMs,180);assert.equal(state.direction,'east');assert.equal(state.queuedDirection,null);assert.deepEqual(state.player,{x:1,z:11});
  f.advance(180);state=await(await f.request('/api/state',undefined,cookie)).json() as any;assert.deepEqual(state.player,{x:2,z:11});assert.equal(state.elapsedMs,360);f.sql.close();
 });
 test('expired sessions reset and ambiguous commits are never replayed automatically',async()=>{

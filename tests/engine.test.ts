@@ -9,6 +9,15 @@ const SENTRY_STEP_MS=LEVEL.sentries[0]!.stepMs;
 function started(){const game=createGame();applyCommand(game,{type:'start'});return game;}
 function borrowed(){const game=started();travel(game,object('terminal'));return game;}
 function stolen(){const game=borrowed();travel(game,object('package'));return game;}
+function bufferedTurnSetup(){
+  const setup=LEVEL.tiles.flatMap(tile=>neighbors(tile).flatMap(first=>{
+    const perpendicular=(Object.keys(offsets) as Direction[]).filter(d=>offsets[d].x*offsets[first.direction].x+offsets[d].z*offsets[first.direction].z===0);
+    return perpendicular.filter(turn=>!neighbors(tile).some(n=>n.direction===turn)&&neighbors(first.position).some(n=>n.direction===turn))
+      .map(turn=>({tile,first,turn}));
+  })).find(s=>s.tile.zone==='service'&&LEVEL.tiles.find(t=>same(t,s.first.position))?.zone==='service');
+  assert.ok(setup,'The maze should have a buffered-turn junction.');
+  return setup;
+}
 
 test('enemy patrol advances on the clock while the player gives no input',()=>{
   const game=started(),before={...game.sentry};
@@ -29,14 +38,7 @@ test('commands cannot advance the simulation or accelerate either actor',()=>{
 });
 
 test('continuous travel buffers an unavailable turn until a real junction',()=>{
-  const game=started();
-  // Find a straight approach where the requested perpendicular turn first opens at the next tile.
-  const setup=LEVEL.tiles.flatMap(tile=>neighbors(tile).flatMap(first=>{
-    const perpendicular=(Object.keys(offsets) as Direction[]).filter(d=>offsets[d].x*offsets[first.direction].x+offsets[d].z*offsets[first.direction].z===0);
-    return perpendicular.filter(turn=>!neighbors(tile).some(n=>n.direction===turn)&&neighbors(first.position).some(n=>n.direction===turn))
-      .map(turn=>({tile,first,turn}));
-  })).find(s=>s.tile.zone==='service'&&LEVEL.tiles.find(t=>same(t,s.first.position))?.zone==='service');
-  assert.ok(setup,'The maze should have a buffered-turn junction.');
+  const game=started(),setup=bufferedTurnSetup();
   game.player={x:setup.tile.x,z:setup.tile.z};game.direction=setup.first.direction;
   applyCommand(game,{type:'move',direction:setup.turn});
   advanceGame(game,PLAYER_STEP_MS);assert.deepEqual(game.player,setup.first.position);
@@ -44,6 +46,49 @@ test('continuous travel buffers an unavailable turn until a real junction',()=>{
   advanceGame(game,PLAYER_STEP_MS);
   assert.deepEqual(game.player,{x:setup.first.position.x+offsets[setup.turn].x,z:setup.first.position.z+offsets[setup.turn].z});
   assert.equal(game.direction,setup.turn);
+});
+
+test('an early corner input cannot erase a starting heading before its first movement tick',()=>{
+  const setup=bufferedTurnSetup();
+  for(const gap of [0,100,PLAYER_STEP_MS-1]){
+    const game=started();game.player={x:setup.tile.x,z:setup.tile.z};
+    const start={...game.player};
+    applyCommand(game,{type:'move',direction:setup.first.direction});
+    advanceGame(game,gap);
+    const sentries=structuredClone(game.sentries),sentryClocks={...game.sentryClocks};
+    applyCommand(game,{type:'move',direction:setup.turn});
+    assert.deepEqual(game.player,start);assert.equal(game.elapsedMs,gap);assert.equal(game.playerClockMs,gap);
+    assert.deepEqual(game.sentries,sentries);assert.deepEqual(game.sentryClocks,sentryClocks);
+    advanceGame(game,PLAYER_STEP_MS-gap);
+    assert.deepEqual(game.player,setup.first.position,`A corner tap after ${gap}ms erased the starting heading`);
+    assert.equal(game.queuedDirection,setup.turn);
+    advanceGame(game,PLAYER_STEP_MS);
+    assert.deepEqual(game.player,{x:setup.first.position.x+offsets[setup.turn].x,z:setup.first.position.z+offsets[setup.turn].z});
+  }
+});
+
+test('the latest available heading replaces a buffered turn without moving or resetting clocks',()=>{
+  const game=started(),setup=bufferedTurnSetup();game.player={x:setup.tile.x,z:setup.tile.z};
+  applyCommand(game,{type:'move',direction:setup.first.direction});
+  advanceGame(game,73);
+  applyCommand(game,{type:'move',direction:setup.turn});
+  const before=snapshot(game),sentries=structuredClone(game.sentries),sentryClocks={...game.sentryClocks};
+  applyCommand(game,{type:'move',direction:setup.first.direction});
+  assert.equal(game.direction,setup.first.direction);assert.equal(game.queuedDirection,null);
+  assert.deepEqual(game.player,before.player);assert.equal(game.elapsedMs,73);assert.equal(game.playerClockMs,73);
+  assert.deepEqual(game.sentries,sentries);assert.deepEqual(game.sentryClocks,sentryClocks);
+  advanceGame(game,PLAYER_STEP_MS-73);assert.deepEqual(game.player,setup.first.position);
+});
+
+test('Brake cancels an accepted heading and an early corner while enemy clocks continue',()=>{
+  const game=started(),setup=bufferedTurnSetup();game.player={x:setup.tile.x,z:setup.tile.z};
+  applyCommand(game,{type:'move',direction:setup.first.direction});
+  applyCommand(game,{type:'move',direction:setup.turn});
+  applyCommand(game,{type:'wait'});const before=snapshot(game);
+  assert.equal(game.direction,null);assert.equal(game.queuedDirection,null);
+  advanceGame(game,SENTRY_STEP_MS);
+  assert.deepEqual(game.player,before.player);assert.equal(game.elapsedMs,SENTRY_STEP_MS);
+  assert.notDeepEqual(game.sentry,before.sentry);
 });
 
 test('Space stops the player without stopping the sentry or the clock',()=>{
@@ -72,7 +117,11 @@ test('pause freezes all clocks, actors and extraction while preserving buffered 
 test('exact gate crossings require real holder possession and gate resources are scoped',()=>{
   const game=started(),gate=LEVEL.gates[0]!;game.player={...gate.a};
   const d=(Object.keys(offsets) as Direction[]).find(d=>same({x:gate.a.x+offsets[d].x,z:gate.a.z+offsets[d].z},gate.b))!;
-  applyCommand(game,{type:'move',direction:d});advanceGame(game,PLAYER_STEP_MS);
+  const before=snapshot(game),sentryClocks={...game.sentryClocks};
+  applyCommand(game,{type:'move',direction:d});
+  assert.deepEqual(game.player,gate.a);assert.equal(game.turn,0);assert.equal(game.elapsedMs,0);
+  assert.deepEqual(game.decisions,before.decisions);assert.deepEqual(game.sentryClocks,sentryClocks);
+  advanceGame(game,PLAYER_STEP_MS);
   assert.deepEqual(game.player,gate.a);assert.equal(game.turn,0);
   assert.equal(game.decisions.at(-1)?.allow,false);assert.equal(game.decisions.at(-1)?.reason,'no credential');
   const withGrant=borrowed();withGrant.player={...gate.a};applyCommand(withGrant,{type:'move',direction:d});advanceGame(withGrant,PLAYER_STEP_MS);

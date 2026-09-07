@@ -108,7 +108,7 @@ export default function Briefing({level,intro,reducedMotion,firstVisit=false,tou
           {practiceMode&&<section className="brief-practice" aria-label="Optional access practice"><button className="practice-toggle" aria-expanded={practiceOpen} aria-controls="brief-access-practice" onClick={()=>setPracticeOpen(value=>!value)}><span><strong>Try the access check</strong><small>Optional practice. Safe to explore before the chase.</small></span><b aria-hidden="true">{practiceOpen?'−':'+'}</b></button>{practiceOpen&&<div id="brief-access-practice"><AccessPractice mode={practiceMode} /></div>}</section>}
           <details className="brief-route-tip"><summary>Route tip</summary><p>{level.tip}</p></details>
           <div className="brief-controls" aria-label="Mission controls">{touchLayout?<>
-            <span><span className="brief-touch-label">Directions</span><b>Steer</b><small>Tap an arrow. The drone keeps moving.</small></span>
+            <span><span className="brief-touch-label">Directions</span><b>Steer</b><small>Touch or slide across the arrows.</small></span>
             <span><span className="brief-touch-label">Brake</span><b>Stop the drone</b><small>Sentries keep moving.</small></span>
             <span><span className="brief-touch-label">Action</span><b>Vault lockdown</b><small>{hasTransit?'Lock Vault at the door. Transit stays active.':'Tap the named action at the Vault door.'}</small></span>
             <span><span className="brief-touch-label">Pause</span><b>Take a break</b><small>Stops the whole simulation.</small></span>
