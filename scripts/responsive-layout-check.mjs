@@ -10,7 +10,8 @@ try{
  const mobile=await browser.newContext({viewport:{width:320,height:568},deviceScaleFactor:2,isMobile:true,hasTouch:true});
  const page=await mobile.newPage();page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base);await page.getByRole('button',{name:'Begin operation',exact:true}).tap();
- await page.getByRole('button',{name:'Next chapter',exact:true}).tap();await page.screenshot({path:`${output}/intro.png`});
+ await page.getByRole('button',{name:'Next chapter',exact:true}).tap();await page.waitForTimeout(100);
+ assert(await page.locator('#briefing-heading').evaluate(el=>el.getBoundingClientRect().top>=0),'A new phone introduction chapter starts at its heading');await page.screenshot({path:`${output}/intro.png`});
  assert.equal(await page.locator('.intro-forward').evaluate(el=>el.scrollWidth>el.clientWidth),false,'Introduction actions fit the smallest phone');
  await page.getByRole('button',{name:'Skip introduction',exact:true}).tap();
  assert.match(await page.locator('.brief-controls').innerText(),/Directions/);await page.getByRole('button',{name:'Begin mission',exact:true}).tap();

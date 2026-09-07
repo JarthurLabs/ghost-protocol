@@ -84,6 +84,9 @@ export default function Briefing({level,intro,reducedMotion,firstVisit=false,tou
   const hasClockReader=level.objects.some(object=>object.type==='renewal');
   useEffect(()=>{setStoryOpen(intro);setChapter(0);setPracticeOpen(firstVisit&&practiceMode!==null);},[intro,level.id,firstVisit,practiceMode]);
   useEffect(()=>{heading.current?.focus();},[storyOpen]);
+  useEffect(()=>{
+    if(touchLayout)heading.current?.closest('.learning-panel')?.scrollTo({top:0});
+  },[chapter,touchLayout]);
   return <div className={`learning-overlay${reducedMotion?' learning-reduced':''}`}>
     <div className={`learning-panel briefing-panel${storyOpen?' showing-intro':''}`} aria-labelledby="briefing-heading">
       <div className="learning-topline"><span className="eyebrow"><i className="mint-line" />AUREL TRAINING NETWORK</span><button className="learning-text-button" onClick={storyOpen?()=>setStoryOpen(false):onBack}>{storyOpen?'Skip introduction':'Back to missions'}<span aria-hidden="true">↗</span></button></div>
