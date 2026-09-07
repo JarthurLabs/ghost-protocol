@@ -9,6 +9,7 @@ export interface BriefingProps {
   intro: boolean;
   reducedMotion: boolean;
   firstVisit?: boolean;
+  touchLayout?: boolean;
   onBegin: () => void;
   onBack: () => void;
 }
@@ -17,7 +18,7 @@ const chapters = [
   { label: 'Your assignment', title: 'You have permission to test this network.', text: 'You control PIP-07, a maintenance drone in a fictional training network. Recover the gold data package, then close the access that could let a pursuer follow you.' },
   { label: 'Borrowed access', title: 'A digital key says what you may open.', text: 'A credential is a digital key. Its permissions say what it can open. Collect the amber Vault key and matching gates use it automatically.' },
   { label: 'A copied key', title: 'A copy can open the same doors.', text: 'In this lab, collecting the package simulates a Vault-key leak and starts the chase. Patrols can catch you before that too. Keep your distance throughout the mission.' },
-  { label: 'Switch access off', title: 'Close the access the pursuer copied.', text: 'Cross into cyan, then press E at the Vault door switch. Both holders lose Vault permission. Switching access off is called revocation. The sentry remains in the maze; keep moving toward extraction.' },
+  { label: 'Switch access off', title: 'Close the access the pursuer copied.', text: 'Cross into cyan, then press E at the Vault door switch. Both holders lose Vault permission. Switching access off is called revocation. The sentry remains in the maze; keep moving toward extraction.', touchText: 'Cross into cyan, then tap the action button at the Vault door switch when it says Lock Vault behind you. Both holders lose Vault permission. Switching access off is called revocation. The sentry remains in the maze; keep moving toward extraction.' },
 ];
 
 function Drone({x,y,security=false}:{x:number;y:number;security?:boolean}) {
@@ -73,7 +74,7 @@ function IntroDiagram({chapter,reducedMotion}:{chapter:number;reducedMotion:bool
   </div>;
 }
 
-export default function Briefing({level,intro,reducedMotion,firstVisit=false,onBegin,onBack}:BriefingProps) {
+export default function Briefing({level,intro,reducedMotion,firstVisit=false,touchLayout=false,onBegin,onBack}:BriefingProps) {
   const [storyOpen,setStoryOpen]=useState(intro),[chapter,setChapter]=useState(0);
   const practiceMode=level.id===1?'borrowed':level.id===3?'expiry':level.id===4?'scopes':null;
   const [practiceOpen,setPracticeOpen]=useState(firstVisit&&practiceMode!==null);
@@ -90,7 +91,7 @@ export default function Briefing({level,intro,reducedMotion,firstVisit=false,onB
         <div className="intro-chapter-label">{String(chapter+1).padStart(2,'0')} / {chapters[chapter].label.toUpperCase()} <span>AT YOUR PACE</span></div>
         <h1 id="briefing-heading" ref={heading} tabIndex={-1}>{chapters[chapter].title}</h1>
         <IntroDiagram chapter={chapter} reducedMotion={reducedMotion} />
-        <p className="intro-caption" aria-live="polite" aria-atomic="true">{chapters[chapter].text}</p>
+        <p className="intro-caption" aria-live="polite" aria-atomic="true">{touchLayout?(chapters[chapter].touchText??chapters[chapter].text):chapters[chapter].text}</p>
         <nav className="intro-chapters" aria-label="Introduction chapters">{chapters.map((item,index)=><button key={item.label} className={index<=chapter?'complete':''} aria-current={index===chapter?'step':undefined} aria-label={`Chapter ${index+1}: ${item.label}`} onClick={()=>setChapter(index)}><i aria-hidden="true" />{item.label}</button>)}</nav>
         <div className="intro-footer"><button className="learning-text-button" disabled={chapter===0} onClick={()=>setChapter(value=>Math.max(0,value-1))}><span aria-hidden="true">←</span>Previous chapter</button><div className="intro-forward"><button className="learning-text-button" onClick={()=>setStoryOpen(false)}>Mission briefing <span aria-hidden="true">→</span></button><button className="primary-button" onClick={()=>chapter===chapters.length-1?setStoryOpen(false):setChapter(value=>value+1)}>{chapter===chapters.length-1?'Open mission briefing':'Next chapter'} <span aria-hidden="true">→</span></button></div></div>
       </>:<>
@@ -103,7 +104,12 @@ export default function Briefing({level,intro,reducedMotion,firstVisit=false,onB
           {hasClockReader&&<p className="brief-reader-note"><span aria-hidden="true">◷ </span>Pass over a raised clock reader to refresh the key named on the device.</p>}
           {practiceMode&&<section className="brief-practice" aria-label="Optional access practice"><button className="practice-toggle" aria-expanded={practiceOpen} aria-controls="brief-access-practice" onClick={()=>setPracticeOpen(value=>!value)}><span><strong>Try the access check</strong><small>Optional practice. Safe to explore before the chase.</small></span><b aria-hidden="true">{practiceOpen?'−':'+'}</b></button>{practiceOpen&&<div id="brief-access-practice"><AccessPractice mode={practiceMode} /></div>}</section>}
           <details className="brief-route-tip"><summary>Route tip</summary><p>{level.tip}</p></details>
-          <div className="brief-controls" aria-label="Mission controls"><span><kbd>W A S D</kbd><b>Steer</b><small>Arrows work too. Keep moving.</small></span><span><kbd>SPACE</kbd><b>Brake</b><small>Sentries keep moving.</small></span><span><kbd>E</kbd><b>Vault lockdown</b><small>{hasTransit?'Transit stays active.':'Shuts Vault gates.'}</small></span><span><kbd>ESC</kbd><b>Pause</b><small>Stops the whole simulation.</small></span></div>
+          <div className="brief-controls" aria-label="Mission controls">{touchLayout?<>
+            <span><span className="brief-touch-label">Directions</span><b>Steer</b><small>Tap an arrow. The drone keeps moving.</small></span>
+            <span><span className="brief-touch-label">Brake</span><b>Stop the drone</b><small>Sentries keep moving.</small></span>
+            <span><span className="brief-touch-label">Action</span><b>Vault lockdown</b><small>{hasTransit?'Lock Vault at the door. Transit stays active.':'Tap the named action at the Vault door.'}</small></span>
+            <span><span className="brief-touch-label">Pause</span><b>Take a break</b><small>Stops the whole simulation.</small></span>
+          </>:<><span><kbd>W A S D</kbd><b>Steer</b><small>Arrows work too. Keep moving.</small></span><span><kbd>SPACE</kbd><b>Brake</b><small>Sentries keep moving.</small></span><span><kbd>E</kbd><b>Vault lockdown</b><small>{hasTransit?'Transit stays active.':'Shuts Vault gates.'}</small></span><span><kbd>ESC</kbd><b>Pause</b><small>Stops the whole simulation.</small></span></>}</div>
         </div>
         <div className="brief-bottom"><p><span className="training-dot" />Start whenever you are ready. Practice and questions are optional.</p><button className="primary-button" onClick={onBegin}>Begin mission <span aria-hidden="true">→</span></button></div>
       </>}

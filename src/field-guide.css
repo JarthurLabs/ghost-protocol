@@ -21,3 +21,10 @@
 .key-copy-note{display:block;margin-top:5px;font-size:10px;line-height:1.4;color:#ffc2a8}
 @media(max-height:820px){.field-note{margin-top:12px;padding-top:10px}.objective-card .field-note p{font-size:10px;line-height:1.6}.field-note strong{font-size:11px}.device-guide[open]{max-height:340px;overflow-y:auto}}
 @media(max-width:700px){.field-note{display:none}.inspector-panel .field-guide dl{grid-template-columns:1fr}}
+
+/* One scroll surface keeps an expanded guide and the return action reachable. */
+.touch-layout .inspector-panel{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#6289844d transparent}
+.touch-layout .inspector-panel>*{flex-shrink:0}
+.touch-layout .inspector-panel .decision-list{flex:none;min-height:auto;overflow:visible}
+.touch-layout .inspector-panel .field-guide{min-width:0}
+.touch-layout .inspector-panel .field-guide-content{overflow-wrap:anywhere}

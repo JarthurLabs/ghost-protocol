@@ -85,9 +85,9 @@ function droneModel(security=false,behavior: 'hunter'|'ambusher'|'warden'='hunte
   const shadow=new THREE.Mesh(new THREE.CircleGeometry(.37,32),new THREE.MeshBasicMaterial({color:0x101c22,transparent:true,opacity:.16,depthWrite:false}));shadow.rotation.x=-Math.PI/2;shadow.position.y=.08;g.add(shadow);
   return g;
 }
-export default function Scene({state,reducedMotion,overview=true,onReady}:{state:GameState;reducedMotion:boolean;overview?:boolean;onReady?:(fps:number)=>void}){
-  const host=useRef<HTMLDivElement>(null),stateRef=useRef(state),motionRef=useRef(reducedMotion),overviewRef=useRef(overview),readyRef=useRef(onReady);
-  stateRef.current=state;motionRef.current=reducedMotion;overviewRef.current=overview;readyRef.current=onReady;
+export default function Scene({state,reducedMotion,overview=true,touchLayout=false,onReady}:{state:GameState;reducedMotion:boolean;overview?:boolean;touchLayout?:boolean;onReady?:(fps:number)=>void}){
+  const host=useRef<HTMLDivElement>(null),stateRef=useRef(state),motionRef=useRef(reducedMotion),overviewRef=useRef(overview),touchRef=useRef(touchLayout),readyRef=useRef(onReady);
+  stateRef.current=state;motionRef.current=reducedMotion;overviewRef.current=overview;touchRef.current=touchLayout;readyRef.current=onReady;
   useEffect(()=>{
     const level=getLevel(state.levelId),cx=(level.width-1)/2,cz=(level.depth-1)/2;
     const el=host.current!;let renderer:THREE.WebGLRenderer;
@@ -324,7 +324,7 @@ export default function Scene({state,reducedMotion,overview=true,onReady}:{state
     }
     for(const mesh of fixed){mesh.removeFromParent();mesh.geometry.dispose();}
     let frames=0,lastSample=performance.now(),last=lastSample,frame=0,alive=true,lastEvent=-1,deniedAt=-1000,pickupAt=-1000,lastShardCount=-1;
-    let lastPlayer={...stateRef.current.player},playerAngle=0,lastOverview=overviewRef.current;
+    let lastPlayer={...stateRef.current.player},playerAngle=0,lastOverview=overviewRef.current,lastTouch=touchRef.current;
     const frameDurations:number[]=[];
     function resize(){
       const w=Math.max(1,el.clientWidth),h=Math.max(1,el.clientHeight);renderer.setSize(w,h);const aspect=w/h;
@@ -334,7 +334,7 @@ export default function Scene({state,reducedMotion,overview=true,onReady}:{state
       for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z])projected.push(new THREE.Vector3(x,y,z).applyMatrix4(camera.matrixWorldInverse));
       const spanX=Math.max(...projected.map(p=>p.x))-Math.min(...projected.map(p=>p.x));
       const spanY=Math.max(...projected.map(p=>p.y))-Math.min(...projected.map(p=>p.y));
-      const worldWidth=overviewRef.current?Math.max(spanX+3,(spanY+3)*aspect):Math.max(18,14*aspect);
+      const worldWidth=overviewRef.current?Math.max(spanX+3,(spanY+3)*aspect):(touchRef.current?Math.max(14,11.5*aspect):Math.max(18,14*aspect));
       const offset=overviewRef.current&&aspect>=1.4?1:0;
       camera.left=-worldWidth/2-offset;camera.right=worldWidth/2-offset;camera.top=worldWidth/(2*aspect)+.35;camera.bottom=-worldWidth/(2*aspect)+.35;camera.near=.1;camera.far=120;camera.updateProjectionMatrix();
     }
@@ -392,7 +392,7 @@ export default function Scene({state,reducedMotion,overview=true,onReady}:{state
       for(let i=0;i<3;i++){const m=extraction.getObjectByName('hold-'+i) as THREE.Mesh;(m.material as THREE.MeshStandardMaterial).emissiveIntensity=s.extractionProgress>(i/3)?2:.15;}
       const burst=Math.max(0,1-(now-pickupAt)/950);sparkles.visible=!s.carrying||burst>0;
       for(let i=0;i<sparkles.children.length;i++){const p=sparkles.children[i];p.position.y=.3+(i%5)*.18+Math.sin(t*2+i)*.06+(s.carrying?(1-burst)*1.1:0);p.scale.setScalar(s.carrying?burst:1);}
-      if(lastOverview!==overviewRef.current){lastOverview=overviewRef.current;resize();}
+      if(lastOverview!==overviewRef.current||lastTouch!==touchRef.current){lastOverview=overviewRef.current;lastTouch=touchRef.current;resize();}
       const focus=overviewRef.current?{x:cx,z:cz}:player.position;
       const cameraSpeed=motion?1:1-Math.exp(-dt*7);
       camera.position.x=THREE.MathUtils.lerp(camera.position.x,focus.x+22,cameraSpeed);camera.position.z=THREE.MathUtils.lerp(camera.position.z,focus.z+28,cameraSpeed);
@@ -406,17 +406,18 @@ export default function Scene({state,reducedMotion,overview=true,onReady}:{state
         const shown=available&&(guideToSwitch||label.kind==='key'||label.id===s.contextObjectId||distance<=(label.kind==='gate'?3:4));
         const projected=label.anchor.clone().project(camera);let x=(projected.x*.5+.5)*el.clientWidth;
         let y=(-projected.y*.5+.5)*el.clientHeight;
-        if(!shown||(!guideToSwitch&&(projected.z< -1||projected.z>1||x<75||x>el.clientWidth-75||y<70||y>el.clientHeight-90))){label.element.style.display='none';continue;}
+        if(!shown||(!guideToSwitch&&(projected.z< -1||projected.z>1||x<(touchRef.current?35:75)||x>el.clientWidth-(touchRef.current?35:75)||y<(touchRef.current?24:70)||y>el.clientHeight-(touchRef.current?20:90)))){label.element.style.display='none';continue;}
         const switchAction=isSwitch&&s.status==='playing'&&label.id===s.contextObjectId;
         let labelText=isSwitch?(locked?'✓ · VAULT LOCKED':switchAction?'E · LOCK VAULT BEHIND YOU':needsLockdown?'LOCK VAULT · DOOR SWITCH':'V · VAULT DOOR SWITCH'):label.id===s.contextObjectId&&label.kind!=='key'?`E · ${label.text}`:label.text;
+        if(touchRef.current)labelText=isSwitch?(locked?'✓ VAULT LOCKED':switchAction?'ACTION · LOCK VAULT':'VAULT DOOR SWITCH'):label.text;
         if(isSwitch){const color=needsLockdown?'#ffce83':locked?'#a6f4da':'#b9dfdc';Object.assign(label.element.style,{color,borderColor:color,background:needsLockdown?'#382c20f5':'#102b2df5',boxShadow:switchAction?'0 0 0 3px #ffcb7435, 0 3px 12px #0009':'0 3px 10px #0009'});}
-        label.element.textContent=labelText;label.element.style.display='block';
+        label.element.textContent=labelText;label.element.style.fontSize=touchRef.current?'9px':'11px';label.element.style.display='block';
         let width=label.element.offsetWidth;const height=label.element.offsetHeight;
         if(guideToSwitch){
           // The one active mission target remains findable in follow view. An
           // edge arrow guides back to its door without claiming E is in range.
-          const side=Math.min(300,el.clientWidth*.23),minX=side+width/2,maxX=el.clientWidth-side-width/2;
-          const shownX=THREE.MathUtils.clamp(x,minX,maxX),shownY=THREE.MathUtils.clamp(y,150+height,el.clientHeight-145);
+          const side=touchRef.current?8:Math.min(300,el.clientWidth*.23),minX=side+width/2,maxX=el.clientWidth-side-width/2;
+          const shownX=THREE.MathUtils.clamp(x,minX,maxX),shownY=THREE.MathUtils.clamp(y,(touchRef.current?12:150)+height,el.clientHeight-(touchRef.current?12:145));
           if(Math.abs(shownX-x)>2||Math.abs(shownY-y)>2){
             const arrows=['→','↘','↓','↙','←','↖','↑','↗'],angle=Math.atan2(y-shownY,x-shownX);
             labelText=`${arrows[(Math.round(angle/(Math.PI/4))+8)%8]} ${labelText}`;label.element.textContent=labelText;width=label.element.offsetWidth;

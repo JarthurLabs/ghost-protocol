@@ -2,6 +2,8 @@
 
 ## Controls and campaign
 
+Phones and touch tablets use a separate layout: large direction buttons, Brake, and a contextual action button sit outside the maze. The camera follows the drone by default; the map icon shows the whole facility. Portrait and landscape layouts reserve space for the controls and compact key indicators. Passive notices expire after three and a half seconds without repeated server updates bringing them back. The desktop keyboard layout remains available.
+
 WASD or the arrow keys steer continuous movement. Press a direction once; the drone keeps moving until a wall or denied gate stops it. An early turn is buffered until the corridor opens. Space brakes only the drone. Escape pauses every actor and the credential clock. The visible Restart level button opens a restart confirmation; R is its keyboard shortcut. M switches between the whole maze and a camera that follows the drone.
 
 Run over a key or the package to collect it. V marks Vault access to the archive, and T marks Transit access to the final exit. Raised clock readers refill their named key timer. Walk onto a reader or press E nearby to use it. Plain machinery on the solid islands is decorative. The optional “What are these devices?” guide explains these symbols during play.

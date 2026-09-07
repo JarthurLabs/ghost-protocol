@@ -13,3 +13,13 @@
 @media(max-height:850px){.intro-caption{min-height:66px}.intro-chapters{padding-top:12px}.intro-chapters>button{font-size:8px}.intro-footer{margin-top:12px}.brief-mission-body{gap:25px}.brief-concept{padding-left:24px}.brief-concept strong{font-size:16px}.briefing-panel:not(.showing-intro)>.learning-topline{margin-bottom:17px}.briefing-panel .brief-bottom{padding-top:14px;margin-top:14px}.defender-limit{font-size:9px;margin-top:9px}}
 @media(max-width:600px){.intro-chapters{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px}.intro-chapters>button{font-size:8px}.intro-chapter-label>span{font-size:6px}.intro-footer{display:flex;flex-wrap:wrap;gap:12px}.intro-forward{gap:15px}.intro-forward .primary-button{min-width:126px;font-size:10px}.intro-footer>.learning-text-button{margin:0}.brief-key-legend{gap:8px}.brief-key-legend>div{padding:10px;gap:8px}.brief-key-legend strong{font-size:7px}.brief-key-legend span{font-size:9px}.brief-concept{padding-left:0}.brief-bottom p{display:none}.briefing-panel .brief-bottom{display:block}.brief-practice{margin-top:19px}.practice-toggle{padding:13px}.practice-toggle small{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.intro-key,.intro-tester,.intro-access-trace,.intro-denial-pulse,.request-packet{animation:none!important}.intro-progress i,.policy-choice{transition:none}.is-allowed .request-packet{left:calc(100% - 7px);opacity:1}.is-denied .request-packet{left:calc(55% - 27px);opacity:1}}
+
+/* Touch instructions and narrow introduction actions stay inside their panel. */
+.touch-layout .brief-touch-label{display:inline-flex;align-items:center;min-height:25px;padding:4px 8px;border:1px solid #7d9ca75c;border-radius:4px;color:#c6dfd8;font-size:10px;font-weight:600;line-height:1.4}
+@media(max-width:600px){
+  .touch-layout .intro-footer{align-items:stretch}
+  .touch-layout .intro-forward{width:100%;min-width:0;flex-direction:column;align-items:stretch;gap:8px}
+  .touch-layout .intro-forward>*{min-width:0;max-width:100%;white-space:normal}
+  .touch-layout .intro-forward .primary-button{width:100%;min-height:44px;height:auto;padding-top:10px;padding-bottom:10px;gap:12px;text-align:left}
+  .touch-layout .intro-footer .learning-text-button,.touch-layout .intro-chapters>button{min-height:44px}
+}

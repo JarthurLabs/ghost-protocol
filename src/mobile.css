@@ -1,0 +1,101 @@
+/* Touch chrome has its own space. No controls or notices cover the maze. */
+.touch-only{display:none}
+.game.touch-layout{height:100dvh;--touch-dock:226px;--touch-top:178px}
+.touch-layout .touch-only{display:inline-flex}
+.touch-layout .scene-shell{inset:calc(var(--touch-top) + env(safe-area-inset-top)) 0 calc(var(--touch-dock) + env(safe-area-inset-bottom))}
+.touch-layout .topbar{top:calc(6px + env(safe-area-inset-top));left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));height:44px;gap:8px}
+.touch-layout .brand{gap:0}.touch-layout .brand>span:last-child{display:none}
+.touch-layout .brand-mark{width:28px;height:28px}
+.touch-layout .mission-heading{display:none}
+.touch-layout .top-actions{gap:3px;flex:1;justify-content:flex-end}
+.touch-layout .quiet-button{width:44px;height:44px;padding:0;justify-content:center;border-radius:9px}
+.touch-layout .quiet-button>span{display:none}
+.touch-layout .quiet-button svg{width:19px;height:19px}
+.touch-layout .quiet-button i{font-style:normal}
+.touch-layout .objective-card{top:calc(62px + env(safe-area-inset-top));left:14px;right:14px;width:auto;height:65px;pointer-events:none}
+.touch-layout .objective-card>.eyebrow{font-size:8px;letter-spacing:1px;line-height:1.2}
+.touch-layout .objective-card h1{font-size:17px;line-height:1.25;margin:5px 0 4px;letter-spacing:-.25px}
+.touch-layout .objective-card>p{font-size:11px;line-height:1.4;max-width:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#bbcecc}
+.touch-layout .objective-target,.touch-layout .package-carried,.touch-layout .objective-card .field-note,.touch-layout .objective-card .device-guide{display:none}
+.touch-layout .status-stack{top:calc(139px + env(safe-area-inset-top));left:14px;right:14px;width:auto;height:30px;display:flex;align-items:center;gap:8px}
+.touch-layout .grant-stack{flex-direction:row;gap:6px;flex:1}
+.touch-layout .grant-stack .access-status{padding:5px 8px;border-radius:6px;flex:1;white-space:nowrap;min-width:0}
+.touch-layout .access-status>div{display:flex;align-items:center;gap:6px}
+.touch-layout .grant-stack .access-status .eyebrow{font-size:7px;letter-spacing:.3px;line-height:1}
+.touch-layout .grant-stack .access-status strong{font-size:11px;margin:0;line-height:1}
+.touch-layout .access-status strong small{font-size:0}
+.touch-layout .access-status strong small:after{content:'s';font-size:10px}
+.touch-layout .status-icon,.touch-layout .key-purpose,.touch-layout .key-copy-note,.touch-layout .automatic-key-note,.touch-layout .sentry-status small{display:none}
+.touch-layout.following-drone .sentry-status,.touch-layout .sentry-status{margin:0;padding:0;border:0;background:none;font-size:7px;letter-spacing:.2px;column-gap:4px;max-width:86px;line-height:1.3}
+.touch-layout .bottom-bar{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(8px + env(safe-area-inset-bottom));height:174px;display:block;border:0;padding:0;touch-action:none;user-select:none;-webkit-user-select:none}
+.touch-layout .controls{width:100%;height:100%;display:grid;grid-template-columns:174px minmax(0,1fr);grid-template-rows:1fr 1fr;column-gap:24px;row-gap:12px;align-items:stretch;padding-top:0}
+.touch-layout .movement-control{grid-column:1;grid-row:1/3;display:block}
+.touch-layout .direction-pad{grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:6px}
+.touch-layout .key-button{width:54px;height:54px;border-radius:13px;border-color:#8cbbbb69;background:linear-gradient(145deg,#2a454c,#1a3037);box-shadow:0 3px 0 #060f17, inset 0 1px 0 #d2fff11a;color:#d4f5eb}
+.touch-layout .key-button.north{grid-column:2;grid-row:1}
+.touch-layout .key-button.west{grid-column:1;grid-row:2}
+.touch-layout .key-button.east{grid-column:3;grid-row:2}
+.touch-layout .key-button.south{grid-column:2;grid-row:3}
+.touch-layout .key-button[aria-pressed=true]{background:#417568;border-color:#a0f2d6;color:#fff}
+.touch-layout .key-button:active:enabled{transform:translateY(2px);background:#568d80}
+.touch-layout .direction-arrow{font-size:29px;font-weight:400;line-height:1}
+.touch-layout .desktop-key,.touch-layout .movement-control>span,.touch-layout .control-divider,.touch-layout .control-action kbd,.touch-layout .footer-note,.touch-layout .run-stats{display:none}
+.touch-layout .control-action{grid-column:2;justify-content:center;align-self:end;width:100%;min-height:66px;padding:10px;border:1px solid #8ce6d469;border-radius:13px;background:#254940;color:#c8f4e7;font-size:13px;font-weight:600;line-height:1.3;text-align:center;box-shadow:0 3px 0 #060f17}
+.touch-layout .control-action>span{max-width:none}
+.touch-layout .interact-control{grid-row:1}
+.touch-layout .interact-control:enabled{background:#4c4127;border-color:#edc475;color:#ffe0a0}
+.touch-layout .interact-control:disabled{opacity:.5;background:#1a2d32;border-color:#7297954d}
+.touch-layout .brake-control{grid-row:2;align-self:start;background:#213e48;border-color:#739cae;color:#deedf3}
+.touch-layout .control-action:active:enabled{transform:translateY(2px)}
+.touch-layout .touch-steering-note{position:absolute;top:-24px;width:100%;justify-content:center;color:#92b5b1;font-size:10px;letter-spacing:.15px;pointer-events:none}
+.touch-layout .live-message{left:14px;right:14px;bottom:calc(184px + env(safe-area-inset-bottom));width:auto;max-width:none;transform:none;text-align:center;pointer-events:none}
+.touch-layout .live-message .interaction-prompt.actionable,.touch-layout .interaction-hint{display:none}
+.touch-layout .live-message .message-text,.touch-layout .interaction-result{max-width:none;width:100%;font-size:11px;line-height:1.4;padding:6px 10px;margin:0;background:#11262fea;box-shadow:none;backdrop-filter:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.touch-layout .interaction-result>span:first-child{display:none}
+.touch-layout .live-message .denial-toast{margin:0;padding:6px 10px;min-width:0;box-shadow:none}
+.touch-layout .denial-toast strong{font-size:9px;margin:0}.touch-layout .denial-toast div>span{font-size:10px}.touch-layout .denial-symbol{width:24px;height:24px}
+.touch-layout .extraction-progress{left:auto;right:14px;bottom:calc(186px + env(safe-area-inset-bottom));transform:none;padding:6px 10px;pointer-events:none}
+.touch-layout .extraction-progress>.eyebrow,.touch-layout .extraction-progress small{font-size:8px}.touch-layout .extraction-progress>div{margin:5px 0}.touch-layout .extraction-progress i{width:22px}
+.touch-layout.on-title .scene-shell{inset:35% 0 0;transform:scale(.95);opacity:.7}
+.touch-layout.on-title .bottom-bar,.touch-layout.campaign-overlay-open .bottom-bar{display:none}
+.touch-layout.on-title .title-intro{top:22%;left:24px;max-width:calc(100% - 48px);width:auto}
+.touch-layout.on-title .title-intro h1{font-size:38px}
+.touch-layout .modal-card{max-height:calc(100dvh - 32px);overflow-y:auto}
+.touch-layout .icon-button{min-width:44px;min-height:44px}
+.touch-layout .pause-key-hint{display:none}
+@media (orientation:landscape) and (max-height:600px){
+ .game.touch-layout{--touch-top:128px;--touch-dock:0px}
+ .touch-layout .scene-shell{inset:var(--touch-top) max(174px,env(safe-area-inset-right)) 8px max(192px,env(safe-area-inset-left))}
+ .touch-layout .objective-card{top:55px;left:14px;right:40%;height:44px}
+ .touch-layout .objective-card>.eyebrow{display:none}
+ .touch-layout .objective-card h1{font-size:15px;margin:0 0 3px}
+ .touch-layout .objective-card>p{font-size:10px;-webkit-line-clamp:1}
+ .touch-layout .status-stack{top:59px;left:63%;right:14px;height:28px}
+ .touch-layout .sentry-status{display:none}
+ .touch-layout .bottom-bar{height:174px;pointer-events:none}
+ .touch-layout .controls{display:block;pointer-events:none}
+ .touch-layout .movement-control{position:absolute;bottom:0;left:0;pointer-events:auto}
+ .touch-layout .control-action{position:absolute;right:0;width:144px;min-height:64px;pointer-events:auto}
+ .touch-layout .interact-control{bottom:80px}.touch-layout .brake-control{bottom:4px}
+ .touch-layout .touch-steering-note{width:174px;top:-34px;text-align:center;font-size:9px;line-height:1.4}
+ .touch-layout .live-message{left:calc(50% - 160px);right:auto;width:320px;bottom:auto;top:88px}
+ .touch-layout .live-message .message-text,.touch-layout .interaction-result{font-size:10px;line-height:1.3;padding:4px 8px}
+ .touch-layout .extraction-progress{right:25px;bottom:172px}
+ .touch-layout.on-title .title-intro{top:19%;max-width:52%}.touch-layout.on-title .title-intro h1{font-size:30px;margin:14px 0}.touch-layout.on-title .title-meta{display:none}
+ .touch-layout.on-title .scene-shell{inset:5% 0 0 42%;transform:none}
+}
+@media (max-width:360px){
+ .touch-layout .top-actions{gap:0}.touch-layout .topbar{left:8px;right:8px;gap:2px}
+ .touch-layout .quiet-button{width:43px}
+ .touch-layout .controls{column-gap:12px}.touch-layout .control-action{font-size:12px;padding:8px}
+ .touch-layout .sentry-status{display:none}
+}
+
+.touch-layout:has(.message-text,.interaction-result,.denial-toast) .touch-steering-note{visibility:hidden}
+@media (orientation:portrait) and (max-height:740px){
+ .game.touch-layout{--touch-top:148px}
+ .touch-layout .objective-card{top:calc(56px + env(safe-area-inset-top));height:49px}
+ .touch-layout .objective-card>.eyebrow{display:none}
+ .touch-layout .objective-card h1{font-size:15px;margin:0 0 3px}
+ .touch-layout .status-stack{top:calc(115px + env(safe-area-inset-top))}
+}
